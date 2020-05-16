@@ -117,7 +117,8 @@ function setup() {
   app.ticker.add(delta => gameLoop(delta));
 }
 let staticRadius = 20,
-  staticRadiusDelay = 0;
+  staticRadiusDelay = 0,
+  staticAlpha = 1;
 
 function gameLoop(delta) {
   staticCircles.clear();
@@ -134,7 +135,7 @@ function gameLoop(delta) {
         if (j % 2) {
           //even row
           if (i % 2) {
-            staticCircles.beginFill(0xffffff);
+            staticCircles.beginFill(0xffffff,staticAlpha);
             staticCircles.drawCircle(i * 100 + 50, j * 100 + 50, staticRadius);
             staticCircles.beginHole();
             staticCircles.drawCircle(
@@ -148,7 +149,7 @@ function gameLoop(delta) {
         } else {
           if (i % 2) {
           } else {
-            staticCircles.beginFill(0xffffff);
+            staticCircles.beginFill(0xffffff,staticAlpha);
             staticCircles.drawCircle(i * 100 + 50, j * 100 + 50, staticRadius);
             staticCircles.beginHole();
             staticCircles.drawCircle(
@@ -163,9 +164,11 @@ function gameLoop(delta) {
       }
     }
     staticRadius += 0.3;
+    staticAlpha -= 0.015;
   } else {
     if (staticRadiusDelay > 40) {
       staticRadius = 20;
+      staticAlpha = 1;
     } else {
       staticRadiusDelay += 1;
     }
