@@ -1,37 +1,48 @@
-Welcome to Glitch
-=================
+# Welcome to Battleship Game
 
-Click `Show` in the header to see your app live. Updates to your code will instantly deploy and update live.
+[Play the game here](https://battleship-game.now.sh).
 
-**Glitch** is the friendly community where you'll build the app of your dreams. Glitch lets you instantly create, remix, edit, and host an app, bot or site, and you can invite collaborators or helpers to simultaneously edit code with you.
+We made this whole game only using open source tools including assets and to continue the tradition we are making the code and all related assets `open source`.
 
-Find out more [about Glitch](https://glitch.com/about).
+Feel free to use any and all of this repository.
 
+**Battleship-game** is pretty much recreation of the iconic(not really) battle scene where they use tsunami buoys to track aliens(bad guys?) and kill them using nothing but their wits and VL-ASROC missiles (Yes, I looked it up) .
 
-Your Project
-------------
+## Files
 
 ### ← README.md
 
-That's this file, where you can tell people what your cool website does and how you built it.
+Repo structure
 
 ### ← index.html
 
-Where you'll write the content of your website. 
+Where you'll probably find nothing except some basic tags
 
 ### ← style.css
 
-CSS files add styling rules to your content.
+Basic CSS like no margin and no padding.
+CSS for WIN and LOSE screens
 
 ### ← script.js
 
-If you're feeling fancy you can add interactivity to your site with JavaScript.
+Pretty much everything is here.
+
+We used [PixiJS](https://www.pixijs.com/) as our renderer.
+
+setup function creates sprites for map,ship,shipTitle,Battleship,Beacons. Uses the minimap to construct the whole map background(Not my best algorithm, suggest something)
+
+gameLoop is our ticker function.
+
+Creates basic animations such as active status of beacons
 
 ### ← assets
 
-Drag in `assets`, like images or music, to add them to your project
+All assets are made using open source 2D tilesets
 
-Made by [Glitch](https://glitch.com/)
--------------------
+We'll rename the assets later
 
-\ ゜o゜)ノ
+### Shout out to [Glitch](https://glitch.com/), our primary editor and [Vercel](https://vercel.com/), our hosting service
+
+## Made by me and Ashritha Sanka
+
+27
