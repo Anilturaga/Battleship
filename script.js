@@ -6,7 +6,7 @@ const battleshipLink =
 const shipTitleLink =
   "https://cdn.glitch.com/eb939e0e-ddd3-4d33-89f1-34204db1d01e%2Fimage%20(1).png?v=1589495178198";
 const beaconLink =
-  "https://cdn.glitch.com/eb939e0e-ddd3-4d33-89f1-34204db1d01e%2Fimage%20(1).png?v=1589584909159";
+  "https://cdn.glitch.com/eb939e0e-ddd3-4d33-89f1-34204db1d01e%2Fimage%20(6).png?v=1589635889012";
 let Application = PIXI.Application,
   Container = PIXI.Container,
   loader = PIXI.loader,
@@ -135,7 +135,7 @@ function gameLoop(delta) {
         if (j % 2) {
           //even row
           if (i % 2) {
-            staticCircles.beginFill(0xffffff,staticAlpha);
+            staticCircles.beginFill(0xffffff, staticAlpha);
             staticCircles.drawCircle(i * 100 + 50, j * 100 + 50, staticRadius);
             staticCircles.beginHole();
             staticCircles.drawCircle(
@@ -149,7 +149,7 @@ function gameLoop(delta) {
         } else {
           if (i % 2) {
           } else {
-            staticCircles.beginFill(0xffffff,staticAlpha);
+            staticCircles.beginFill(0xffffff, staticAlpha);
             staticCircles.drawCircle(i * 100 + 50, j * 100 + 50, staticRadius);
             staticCircles.beginHole();
             staticCircles.drawCircle(
