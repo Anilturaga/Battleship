@@ -38,7 +38,8 @@ let Battleship,
   coordsFontSize = 14,
   circle,
   xGraph,
-  yGraph;
+  yGraph,
+  BeaconContainer = [];
 function setup() {
   for (let j = 0; j < window.innerHeight / 100; j++) {
     let leftCoords = new Text(alphabetArray[j]);
@@ -52,6 +53,7 @@ function setup() {
     app.stage.addChild(leftCoords);
     for (let i = 0; i < window.innerWidth / 100; i++) {
       let map = new PIXI.Sprite(PIXI.loader.resources[graphLink].texture);
+
       let beacon = new PIXI.Sprite(PIXI.loader.resources[beaconLink].texture);
 
       map.scale.set(0.5, 0.5);
@@ -69,26 +71,61 @@ function setup() {
         };
         app.stage.addChild(leftCoords);
       }
+      let depth = new Text("0ft");
+      depth.style = {
+        fill: "white",
+        fontFamily: "Arial",
+        fontSize: coordsFontSize * 2
+      };
+      depth.scale.set(0.45, 0.45);
+
       if (j % 2) {
         //even row
         if (i % 2) {
+          let BeaconContainerElement = new Container();
+          let redCircle = new Graphics();
+
           beacon.anchor.x = 0.5;
           beacon.anchor.y = 0.5;
           beacon.scale.set(0.7, 0.7);
-          beacon.x = i * 100 + 50;
-          beacon.y = j * 100 + 50;
-          app.stage.addChild(beacon);
+          BeaconContainerElement.x = i * 100;
+          BeaconContainerElement.y = j * 100;
+          beacon.x = 50;
+          beacon.y = 50;
+          redCircle.x = 50;
+          redCircle.y = 50;
+          BeaconContainerElement.addChild(redCircle);
+
+          BeaconContainerElement.addChild(beacon);
+          depth.position.set(50 - depth.width / 2, 100 - depth.height);
+          BeaconContainerElement.addChild(depth);
+
+          app.stage.addChild(BeaconContainerElement);
+          BeaconContainer.push(BeaconContainerElement);
         }
       } else {
         if (i % 2) {
         } else {
+          let BeaconContainerElement = new Container();
+          let redCircle = new Graphics();
+
           beacon.anchor.x = 0.5;
           beacon.anchor.y = 0.5;
           beacon.scale.set(0.7, 0.7);
+          BeaconContainerElement.x = i * 100;
+          BeaconContainerElement.y = j * 100;
+          beacon.x = 50;
+          beacon.y = 50;
+          redCircle.x = 50;
+          redCircle.y = 50;
+          BeaconContainerElement.addChild(redCircle);
 
-          beacon.x = i * 100 + 50;
-          beacon.y = j * 100 + 50;
-          app.stage.addChild(beacon);
+          BeaconContainerElement.addChild(beacon);
+          depth.position.set(50 - depth.width / 2, 100 - depth.height);
+          BeaconContainerElement.addChild(depth);
+
+          app.stage.addChild(BeaconContainerElement);
+          BeaconContainer.push(BeaconContainerElement);
         }
       }
     }
@@ -113,15 +150,36 @@ function setup() {
   Battleship.x = xGraph * 50 - ship.width;
   Battleship.y = yGraph * 100 - ship.height;
   app.stage.addChild(Battleship);
-
   app.ticker.add(delta => gameLoop(delta));
 }
 let staticRadius = 20,
   staticRadiusDelay = 0,
-  staticAlpha = 1;
+  staticAlpha = 1,
+  BeaconContainerIndex = 0,
+  indexDelay = 0;
 
 function gameLoop(delta) {
   staticCircles.clear();
+  if (indexDelay > 40) {
+    BeaconContainer.map(each => {
+      let sign = 0;
+      if (Math.random() > 0.4) {
+        sign = "";
+      } else {
+        sign = "-";
+      }
+      let value = (Math.random() * 4).toPrecision(2);
+      each.children[2].text = sign + value + "ft";
+      each.children[0].clear()
+      each.children[0].beginFill(0xff0000, 0.5);
+      each.children[0].drawCircle(0,0, value*2);
+
+      each.children[0].endFill();
+    });
+    indexDelay = 0;
+  } else {
+    indexDelay += 1;
+  }
   if (staticRadius < 40) {
     staticRadiusDelay = 0;
     for (let j = 0; j < yGraph; j++) {
@@ -145,6 +203,7 @@ function gameLoop(delta) {
             );
             staticCircles.endHole();
             staticCircles.endFill();
+            //BeaconContainer.map(each=>{console.log(each)})
           }
         } else {
           if (i % 2) {
