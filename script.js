@@ -39,6 +39,7 @@ let Battleship,
   circle,
   xGraph,
   yGraph,
+  staticCircles,
   BeaconContainer = [],
   nextBeaconContainer;
 function setup() {
@@ -53,9 +54,9 @@ function setup() {
     };
     app.stage.addChild(leftCoords);
     for (let i = 0; i < window.innerWidth / 100; i++) {
-      let map = new PIXI.Sprite(PIXI.loader.resources[graphLink].texture);
+      let map = new Sprite(loader.resources[graphLink].texture);
 
-      let beacon = new PIXI.Sprite(PIXI.loader.resources[beaconLink].texture);
+      let beacon = new Sprite(loader.resources[beaconLink].texture);
 
       map.scale.set(0.5, 0.5);
       map.x = 100 * i;
@@ -139,12 +140,12 @@ function setup() {
   xGraph = Math.floor(window.innerWidth / 100);
   yGraph = Math.floor(window.innerHeight / 100);
 
-  ship = new PIXI.Sprite(PIXI.loader.resources[battleshipLink].texture);
+  ship = new Sprite(loader.resources[battleshipLink].texture);
   //console.log(window.innerWidth, window.innerHeight, yGraph);
   ship.scale.set(0.7, 0.7);
   Battleship = new Container();
 
-  let shipTitle = new PIXI.Sprite(PIXI.loader.resources[shipTitleLink].texture);
+  let shipTitle = new Sprite(loader.resources[shipTitleLink].texture);
   shipTitle.x = ship.x + ship.width - 7;
   //shipTitle.scale.set(0.7, 0.7);
 
@@ -177,7 +178,7 @@ function gameLoop(delta) {
     BeaconContainer.map((each, index) => {
       let radius =
         prevBeaconContainer[index] +
-        ((nextBeaconContainer[index] - prevBeaconContainer[index]) / 40) *
+        ((nextBeaconContainer[index] - prevBeaconContainer[index]) / 60) *
           indexDelay;
 
       each.children[0].clear();
