@@ -161,15 +161,9 @@ let staticRadius = 20,
 function gameLoop(delta) {
   staticCircles.clear();
   if (indexDelay > 40) {
-    BeaconContainer.map(each => {
-      let sign = 0;
-      if (Math.random() > 0.4) {
-        sign = "";
-      } else {
-        sign = "-";
-      }
+    BeaconContainer.map(each => {      
       let value = (Math.random() * 4).toPrecision(2);
-      each.children[2].text = sign + value + "ft";
+      each.children[2].text =  value + "ft";
       each.children[0].clear()
       each.children[0].beginFill(0xff0000, 0.5);
       each.children[0].drawCircle(0,0, value*2);
