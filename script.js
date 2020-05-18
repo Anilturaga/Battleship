@@ -39,7 +39,8 @@ let Battleship,
   circle,
   xGraph,
   yGraph,
-  BeaconContainer = [];
+  BeaconContainer = [],
+  nextBeaconContainer;
 function setup() {
   for (let j = 0; j < window.innerHeight / 100; j++) {
     let leftCoords = new Text(alphabetArray[j]);
@@ -130,6 +131,8 @@ function setup() {
       }
     }
   }
+
+  nextBeaconContainer = new Array(BeaconContainer.length).fill(0);
   staticCircles = new Graphics();
   app.stage.addChild(staticCircles);
 
@@ -137,7 +140,7 @@ function setup() {
   yGraph = Math.floor(window.innerHeight / 100);
 
   ship = new PIXI.Sprite(PIXI.loader.resources[battleshipLink].texture);
-  console.log(window.innerWidth, window.innerHeight, yGraph);
+  //console.log(window.innerWidth, window.innerHeight, yGraph);
   ship.scale.set(0.7, 0.7);
   Battleship = new Container();
 
@@ -156,22 +159,33 @@ let staticRadius = 20,
   staticRadiusDelay = 0,
   staticAlpha = 1,
   BeaconContainerIndex = 0,
-  indexDelay = 0;
+  indexDelay = 0,
+  prevBeaconContainer = [];
 
 function gameLoop(delta) {
   staticCircles.clear();
-  if (indexDelay > 40) {
-    BeaconContainer.map(each => {      
-      let value = (Math.random() * 4).toPrecision(2);
-      each.children[2].text =  value + "ft";
-      each.children[0].clear()
-      each.children[0].beginFill(0xff0000, 0.5);
-      each.children[0].drawCircle(0,0, value*2);
+  if (indexDelay > 60) {
+    prevBeaconContainer = nextBeaconContainer.slice(0);
+    BeaconContainer.map((each, index) => {
+      let value = (Math.random() * 3.5 + 1).toPrecision(2);
+      nextBeaconContainer[index] = parseInt(value);
 
-      each.children[0].endFill();
+      each.children[2].text = value + "ft";
     });
     indexDelay = 0;
   } else {
+    BeaconContainer.map((each, index) => {
+      let radius =
+        prevBeaconContainer[index] +
+        ((nextBeaconContainer[index] - prevBeaconContainer[index]) / 40) *
+          indexDelay;
+
+      each.children[0].clear();
+      each.children[0].beginFill(0xff0000, 0.5);
+      each.children[0].drawCircle(0, 0, radius * 2);
+
+      each.children[0].endFill();
+    });
     indexDelay += 1;
   }
   if (staticRadius < 40) {
