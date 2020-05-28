@@ -12,16 +12,16 @@ Feel free to use any and all of this repository.
 
 ### ← README.md
 
-Repo structure
+Repo structure.
 
 ### ← index.html
 
-Where you'll probably find nothing except some basic tags
+Where you'll probably find nothing except some basic tags.
 
 ### ← style.css
 
 Basic CSS like no margin and no padding.
-CSS for WIN and LOSE screens
+CSS for WIN and LOSE screens.
 
 ### ← script.js
 
@@ -33,16 +33,20 @@ setup function creates sprites for map,ship,shipTitle,Battleship,Beacons. Uses t
 
 gameLoop is our ticker function.
 
-Creates basic animations such as active status of beacons
+Creates basic animations such as active status of beacons.
+
+onClick function is called when any part of map is pressed and it triggers aim box.
+
+onBattleshipClick function uses a bit state to invert the ship's direction everytime the Battleship sprite is clicked.
 
 ### ← assets
 
-All assets are made using open source 2D tilesets
+All assets are made using open sourced 2D tilesets.
 
-We'll rename the assets later
+We'll rename the assets later.
 
-### Shout out to [Glitch](https://glitch.com/), our primary editor and [Vercel](https://vercel.com/), our hosting service
+### Shout out to [Glitch](https://glitch.com/), our primary editor and [Vercel](https://vercel.com/), our hosting platform.
 
-## Made by me and Ashritha Sanka
+## Made by Anil Turaga and Ashritha Sanka.
 
 27
