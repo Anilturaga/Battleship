@@ -1,6 +1,6 @@
 # Welcome to Battleship Game
 
-[Play the game here](https://battleship-game.now.sh).
+[Play the game here](https://jpj.now.sh).
 
 We made this whole game only using open source tools including assets and to continue the tradition we are making the code and all related assets `open source`.
 

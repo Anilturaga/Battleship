@@ -24,7 +24,7 @@ const aimSelectLink =
   "https://cdn.glitch.com/eb939e0e-ddd3-4d33-89f1-34204db1d01e%2FaimSelect.png?v=1590613654731";
 let Application = PIXI.Application,
   Container = PIXI.Container,
-  loader = PIXI.loader,
+  loader = PIXI.Loader.shared,
   resources = PIXI.loader.resources,
   Graphics = PIXI.Graphics,
   TextureCache = PIXI.utils.TextureCache,
@@ -77,7 +77,18 @@ let Battleship,
   yBattleship = 0,
   aimSelectArray = [],
   shipDefaultSpeed = 0.5,
-  fireButtonContainer;
+  fireButtonContainer,
+  collectBeacons,
+  collectMaps,
+  missileContainer = [],
+  missile0Text,
+  missile1Text,
+  beaconIndexLocation = [];
+let gameGraphics = new Container();
+let gameState = 0;
+let missileTrail = new Graphics();
+let mapsArray = [];
+let enemyShips;
 function setup() {
   //console.log("ship coordinates",Math.floor(window.innerWidth / 100),Math.floor(window.innerHeight/50))
   xGraph = Math.floor(window.innerWidth / 50);
@@ -102,6 +113,9 @@ function setup() {
   // this button mode will mean the hand cursor appears when you roll over the bunny with your mouse
   Battleship.buttonMode = true;
   Battleship.on("pointerdown", onBattleshipClick);
+  Battleship.alpha = 0;
+  collectBeacons = new Container();
+  collectMaps = new Container();
 
   for (let j = 0; j < window.innerHeight / 50; j++) {
     let leftCoords = new Text(alphabetArray[j]);
@@ -112,8 +126,8 @@ function setup() {
       fontFamily: "Teko",
       fontSize: coordsFontSize
     };
-    app.stage.addChild(leftCoords);
-
+    collectMaps.addChild(leftCoords);
+    var horizontalMap = [];
     for (let i = 0; i < window.innerWidth / 50; i++) {
       //console.log(i, j);
       let map = new Sprite(loader.resources[graphLink].texture);
@@ -123,6 +137,7 @@ function setup() {
       map.scale.set(0.25, 0.25);
       map.x = 50 * i;
       map.y = 50 * j;
+      map.alpha = 0;
       // Opt-in to interactivity
       map.interactive = true;
 
@@ -131,7 +146,8 @@ function setup() {
 
       // Pointers normalize touch and mouse
       map.on("pointerdown", event => onClick(map));
-      app.stage.addChild(map);
+      horizontalMap.push(map);
+      collectMaps.addChild(map);
 
       if (j === 0) {
         let leftCoords = new Text(i + 27);
@@ -141,7 +157,7 @@ function setup() {
           fontFamily: "Teko",
           fontSize: coordsFontSize
         };
-        app.stage.addChild(leftCoords);
+        collectMaps.addChild(leftCoords);
       }
       let depth = new Text("0ft");
       depth.style = {
@@ -188,8 +204,10 @@ function setup() {
             depth.position.set(25 - depth.width / 2, 50 - depth.height);
             depth.alpha = 0.7;
             BeaconContainerElement.addChild(depth);
-            app.stage.addChild(BeaconContainerElement);
+            BeaconContainerElement.visible = false;
+            collectBeacons.addChild(BeaconContainerElement);
             BeaconContainer.push(BeaconContainerElement);
+            beaconIndexLocation.push([i, j]);
           }
         } else {
           if (i % 2) {
@@ -225,32 +243,42 @@ function setup() {
             BeaconContainerElement.addChild(beacon);
             depth.position.set(25 - depth.width / 2, 50 - depth.height);
             BeaconContainerElement.addChild(depth);
-            app.stage.addChild(BeaconContainerElement);
+            BeaconContainerElement.visible = false;
+            collectBeacons.addChild(BeaconContainerElement);
             BeaconContainer.push(BeaconContainerElement);
+            beaconIndexLocation.push([i, j]);
           }
         }
       }
     }
+    mapsArray.push(horizontalMap);
   }
+  gameGraphics.addChild(collectMaps);
 
+  gameGraphics.addChild(collectBeacons);
+  collectBeacons.children = shuffle(collectBeacons.children);
   nextBeaconContainer = new Array(BeaconContainer.length).fill(0);
   staticCircles = new Graphics();
-  app.stage.addChild(staticCircles);
+  gameGraphics.addChild(staticCircles);
 
-  app.stage.addChild(Battleship);
+  gameGraphics.addChild(Battleship);
 
   let aim0 = new Sprite(loader.resources[aimSelectLink].texture);
   aim0.x = 0;
   aim0.y = 0;
   aim0.visible = false;
+  aim0.anchor.x = 0.5;
+  aim0.anchor.y = 0.5;
   aimSelectArray.push(aim0);
   let aim1 = new Sprite(loader.resources[aimSelectLink].texture);
   aim1.x = 0;
   aim1.y = 0;
+  aim1.anchor.x = 0.5;
+  aim1.anchor.y = 0.5;
   aim1.visible = false;
   aimSelectArray.push(aim1);
-  app.stage.addChild(aim0);
-  app.stage.addChild(aim1);
+  gameGraphics.addChild(aim0);
+  gameGraphics.addChild(aim1);
   fireButtonContainer = new Container();
   let message = new Text("FIRE");
   let rectangle = new Graphics();
@@ -268,14 +296,75 @@ function setup() {
     fontSize: 27
   };
 
-  fireButtonContainer.x = Math.floor(window.innerWidth / 100) * 50 - 12.5;
-  fireButtonContainer.y = Battleship.y + ship.height;
   fireButtonContainer.addChild(rectangle);
   fireButtonContainer.addChild(message);
+  fireButtonContainer.x = Math.floor(window.innerWidth / 100) * 50 - 12.5;
+  fireButtonContainer.y = window.innerHeight - fireButtonContainer.height;
   fireButtonContainer.interactive = true;
   // Shows hand cursor
   fireButtonContainer.buttonMode = true;
-  app.stage.addChild(fireButtonContainer);
+  fireButtonContainer.on("pointerdown", event => onFire());
+  fireButtonContainer.alpha = 0;
+  gameGraphics.addChild(fireButtonContainer);
+  /*line.lineStyle(1, 0xFFFFFF, 1);
+line.moveTo(0, 0);
+line.lineTo(80, 50);
+line.x = 32;
+line.y = 32;
+*/
+
+  let missileContainer0 = new Container();
+  let line0 = new Graphics();
+  let missile0 = new Sprite(loader.resources[missileLink].texture);
+  missile0.anchor.x = 0.5;
+  missile0.anchor.y = 0.5;
+  missileContainer0.addChild(line0);
+  missileContainer0.addChild(missile0);
+
+  let missileContainer1 = new Container();
+  let missile1 = new Sprite(loader.resources[missileLink].texture);
+  missile1.anchor.x = 0.5;
+  missile1.anchor.y = 0.5;
+  let line1 = new Graphics();
+  missileContainer1.addChild(line1);
+  missileContainer1.addChild(missile1);
+
+  missileContainer0.visible = false;
+  missileContainer1.visible = false;
+
+  gameGraphics.addChild(missileContainer0);
+  gameGraphics.addChild(missileContainer1);
+  missileContainer.push(missileContainer0);
+  missileContainer.push(missileContainer1);
+  gameGraphics.addChild(missileTrail);
+  missile0Text = new Text("NaN");
+  missile0Text.position.set(0, 0);
+  missile0Text.style = {
+    fill: "white",
+    fontFamily: "Teko",
+    fontSize: coordsFontSize - 2
+  };
+  missile0Text.visible = false;
+  gameGraphics.addChild(missile0Text);
+  missile1Text = new Text("NaN");
+  missile1Text.position.set(0, 0);
+  missile1Text.style = {
+    fill: "white",
+    fontFamily: "Teko",
+    fontSize: coordsFontSize - 2
+  };
+  missile1Text.visible = false;
+  gameGraphics.addChild(missile1Text);
+  //gameGraphics.visible = false;
+      Battleship.alpha = 1;
+  
+console.log(gameGraphics)
+  gameGraphics.scale.x=2
+      gameGraphics.scale.y=2
+  
+      //gameGraphics.pivot.set(Math.floor(window.innerWidth / 100) * 25+Battleship.width/4-25,window.innerHeight-Battleship.height*2)
+  app.stage.addChild(gameGraphics);
+  //console.log(collectMaps.children);
 
   let left = keyboard(37),
     up = keyboard(38),
@@ -304,20 +393,69 @@ function setup() {
       //yBattleship = 0;
     }
   };
+  gameState = 1;
   app.ticker.add(delta => gameLoop(delta));
+
+  //console.log(beaconIndexLocation)
 }
 let staticRadius = 5,
   staticRadiusDelay = 0,
   staticAlpha = 0,
   BeaconContainerIndex = 0,
-  indexDelay = 0,
-  prevBeaconContainer = [];
-
+  indexDelay = 72,
+  prevBeaconContainer = new Array(BeaconContainer.length).fill(0),
+  startUpCount = 0,
+  collectBeaconsArrayCount = 0,
+  missile0X = 0,
+  missile0Y = 0,
+  missile1X = 0,
+  missile1Y = 0,
+  k = 0,
+    pivotX = 0,pivotY = 0,
+  enemyBeacon = [];
 function gameLoop(delta) {
+  if (gameState == 1) {
+    if (collectBeaconsArrayCount < collectBeacons.children.length - 2) {
+      collectBeacons.children[collectBeaconsArrayCount].visible = true;
+      collectBeacons.children[collectBeaconsArrayCount + 1].visible = true;
+      collectBeaconsArrayCount += 2;
+    } else if (k < Math.ceil(mapsArray[0].length / 2)) {
+      for (let l = 0; l < mapsArray.length; l++) {
+        mapsArray[l][k].alpha = 1;
+      }
+      for (let l = 0; l < mapsArray.length; l++) {
+        //console.log("/", mapsArray[l][k].alpha,l,k,mapsArray.length,mapsArray[1].length);
+        mapsArray[l][mapsArray[0].length - 1 - k].alpha = 1;
+      }
+      k += 1;
+      //collectMaps.alpha+=0.05
+    } else if (fireButtonContainer.alpha < 1) {
+      //Battleship.alpha += 0.03;
+      fireButtonContainer.alpha = fireButtonContainer.alpha+0.03;
+      //console.log(parseFloat(fireButtonContainer.alpha.toPrecision(3)),fireButtonContainer.alpha-1)
+      gameGraphics.scale.x-=0.03
+      gameGraphics.scale.y-=0.03
+      /*console.log(gameGraphics.scale.x,
+      gameGraphics.scale.y
+      )
+      //if(fireButtonContainer.alpha<1){
+      //if(fireButtonContainer.alpha===0.27 || fireButtonContainer.alpha===0.6000000000000003 || fireButtonContainer.alpha===0.9900000000000007){
+      gameGraphics.pivot.set((Math.floor(window.innerWidth / 100) * 25+Battleship.width/4-25)*(1-fireButtonContainer.alpha),(window.innerHeight-Battleship.height*2)*(1-fireButtonContainer.alpha))
+      //console.log(gameGraphics.pivot.x,gameGraphics.pivot.y)
+      //console.log(Battleship.x,Battleship.y)
+      */
+    } else {
+      //gameGraphics.pivot.set(0,0)
+      gameGraphics.scale.x=1
+      gameGraphics.scale.y=1
+      console.log("Game state to 0");
+      gameState = 0;
+    }
+  }
   //console.log(yBattleship);
   //Battleship.x = Battleship.x + xBattleship;
   Battleship.y = Battleship.y + yBattleship;
-  yBattleship += yBattleship / 100;
+  //yBattleship += yBattleship / 100;
   if (Battleship.y < 0) {
     Battleship.y = 2;
   }
@@ -331,63 +469,292 @@ function gameLoop(delta) {
     Battleship.y = yGraph * 50 - ship.height - 2;
   }
   staticCircles.clear();
-  if (indexDelay > 60) {
+  if (indexDelay > 30) {
     prevBeaconContainer = nextBeaconContainer.slice(0);
     BeaconContainer.map((each, index) => {
-      let value = (Math.random() * 8).toPrecision(1);
-      nextBeaconContainer[index] = parseInt(value);
-      if (Math.random() * 10 > 7) {
-        each.children[4].text = value + "ft";
+      if (enemyBeacon.includes(index)) {
+        nextBeaconContainer[index] = 23;
+        each.children[4].text = 15 + "ft";
+        each.children[4].position.set(25 - each.children[4].width / 2, 50);
+      } else {
+        let value = (Math.random() * 8).toPrecision(1);
+        nextBeaconContainer[index] = parseInt(value);
+        if (Math.random() * 10 > 7) {
+          each.children[4].text = value + "ft";
+          each.children[4].position.set(
+            25 - each.children[4].width / 2,
+            50 - each.children[4].height
+          );
+        }
       }
     });
     indexDelay = 0;
   } else {
     BeaconContainer.map((each, index) => {
-      let radius =
-        prevBeaconContainer[index] +
-        ((nextBeaconContainer[index] - prevBeaconContainer[index]) / 60) *
-          indexDelay;
-      each.children[3].alpha = radius / 10 + 0.3;
-      each.children[1].alpha = radius / 10 - 0.3;
-      each.children[2].alpha = radius / 10 - 0.3;
-      each.children[0].clear();
-      each.children[0].beginFill(0xff0000, 0.5);
-      each.children[0].drawCircle(0, 0, radius);
+      if (enemyBeacon.includes(index)) {
+        let radius =
+          prevBeaconContainer[index] +
+          ((nextBeaconContainer[index] - prevBeaconContainer[index]) / 30) *
+            indexDelay;
+        staticCircles.beginFill(0xffffff, 1 - (staticRadius - 10) / 30);
+        staticCircles.drawCircle(
+          beaconIndexLocation[index][0] * 50 + 25,
+          beaconIndexLocation[index][1] * 50 + 25,
+          staticRadius
+        );
+        staticCircles.beginHole();
+        staticCircles.drawCircle(
+          beaconIndexLocation[index][0] * 50 + 25,
+          beaconIndexLocation[index][1] * 50 + 25,
+          staticRadius - 2
+        );
 
-      each.children[0].endFill();
+        staticCircles.endHole();
+        each.children[3].alpha = 1;
+        each.children[1].alpha = 1;
+        each.children[2].alpha = 1;
+        each.children[0].clear();
+        each.children[0].beginFill(0xff0000, 0.5);
+        each.children[0].drawCircle(0, 0, radius);
+
+        each.children[0].endFill();
+      } else {
+        let radius =
+          prevBeaconContainer[index] +
+          ((nextBeaconContainer[index] - prevBeaconContainer[index]) / 30) *
+            indexDelay;
+        //console.log(radius)
+        each.children[3].alpha = radius / 10 + 0.3;
+        each.children[1].alpha = radius / 10 - 0.4;
+        each.children[2].alpha = radius / 10 - 0.4;
+        each.children[0].clear();
+        each.children[0].beginFill(0xff0000, 0.5);
+        each.children[0].drawCircle(0, 0, radius);
+
+        each.children[0].endFill();
+      }
     });
+    if (staticRadius < 40) {
+      staticRadius += 1;
+    } else {
+      if (staticRadiusDelay < 30) {
+        staticRadiusDelay += 1;
+      } else {
+        staticRadius = 10;
+        staticRadiusDelay = 0;
+      }
+    }
     indexDelay += 1;
+  }
+  missileTrail.clear();
+  missile0Text.visible = false;
+  missile1Text.visible = false;
+
+  if (missileContainer[0].visible === true) {
+    if (missileContainer[0].x > aimSelectArray[0].x) {
+      missileContainer[0].x -= missile0X;
+    } else {
+      missileContainer[0].x += missile0X;
+    }
+    if (missileContainer[0].y > aimSelectArray[0].y) {
+      missileContainer[0].y -= missile0Y;
+    } else {
+      missileContainer[0].y += missile0Y;
+    }
+    if (
+      Math.abs(missileContainer[0].x - aimSelectArray[0].x) < 25 &&
+      Math.abs(missileContainer[0].y - aimSelectArray[0].y) < 25
+    ) {
+      missileContainer[0].visible = false;
+    }
+    missile0Text.visible = true;
+    missile0Text.text =
+      Math.sqrt(
+        Math.pow(missileContainer[0].x - aimSelectArray[0].x, 2) +
+          Math.pow(missileContainer[0].y - aimSelectArray[0].y, 2)
+      ).toPrecision(7) + "\n ata M_72";
+    missile0Text.position.set(
+      missileContainer[0].x + coordsFontSize,
+      missileContainer[0].y - coordsFontSize
+    );
+    missileTrail.lineStyle(2, 0xffffff, 0.7);
+    missileTrail.moveTo(
+      Battleship.x + ship.width / 2,
+      Battleship.y + ship.height / 4
+    );
+    missileTrail.lineTo(missileContainer[0].x, missileContainer[0].y);
+    missileTrail.x = 0;
+    missileTrail.y = 0;
+  }
+  if (missileContainer[1].visible === true) {
+    if (missileContainer[1].x > aimSelectArray[1].x) {
+      missileContainer[1].x -= missile1X;
+    } else {
+      missileContainer[1].x += missile1X;
+    }
+    if (missileContainer[1].y > aimSelectArray[1].y) {
+      missileContainer[1].y -= missile1Y;
+    } else {
+      missileContainer[1].y += missile1Y;
+    }
+    if (
+      Math.abs(missileContainer[1].x - aimSelectArray[1].x) < 25 &&
+      Math.abs(missileContainer[1].y - aimSelectArray[1].y) < 25
+    ) {
+      missileContainer[1].visible = false;
+    }
+    missile1Text.visible = true;
+    missile1Text.text =
+      Math.sqrt(
+        Math.pow(missileContainer[1].x - aimSelectArray[1].x, 2) +
+          Math.pow(missileContainer[1].y - aimSelectArray[1].y, 2)
+      ).toPrecision(7) + "\n ata M_77";
+    missile1Text.position.set(
+      missileContainer[1].x + coordsFontSize,
+      missileContainer[1].y - coordsFontSize
+    );
+    missileTrail.lineStyle(2, 0xffffff, 0.7);
+    missileTrail.moveTo(
+      Battleship.x + ship.width / 2,
+      Battleship.y + 3 * (ship.height / 4)
+    );
+    missileTrail.lineTo(missileContainer[1].x, missileContainer[1].y);
+    missileTrail.x = 0;
+    missileTrail.y = 0;
+  }
+}
+enemyShips = new Graphics();
+let enemyX, enemyY;
+var enemyKey = setInterval(enemyFunction, 4000);
+function enemyFunction() {
+  enemyX = randomNumber(0, Math.floor(window.innerWidth / 50));
+  enemyY = randomNumber(0, Math.floor(window.innerHeight / 50));
+  enemyShips.clear();
+  enemyShips.beginFill(0x66ccff);
+  enemyShips.drawRect(0, 0, 50, 50);
+  enemyShips.endFill();
+  enemyShips.x = enemyX * 50;
+  enemyShips.y = enemyY * 50;
+  enemyShips.alpha = 0;
+  var index = beaconIndexLocation.findIndex(findIndexFunc);
+  enemyBeacon = [];
+  if (index !== -1) {
+    //console.log("yoooooooooooooooo!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+    enemyBeacon.push(index);
+  }
+
+  app.stage.addChild(enemyShips);
+}
+function findIndexFunc(each) {
+  if (each[0] === enemyX && each[1] === enemyY) {
+    return true;
+  } else {
+    return false;
+  }
+}
+
+function onFire() {
+  if (aimSelectArray[0].visible === true) {
+    missileContainer[0].visible = true;
+    missileContainer[0].x = Battleship.x;
+    missileContainer[0].y = Battleship.y + ship.height / 4;
+    missile0X =
+      Math.abs(missileContainer[0].x - aimSelectArray[0].x) /
+      Math.sqrt(
+        Math.pow(missileContainer[0].y - aimSelectArray[0].y, 2) +
+          Math.pow(missileContainer[0].x - aimSelectArray[0].x, 2)
+      );
+
+    missile0Y =
+      Math.abs(missileContainer[0].y - aimSelectArray[0].y) /
+      Math.sqrt(
+        Math.pow(missileContainer[0].y - aimSelectArray[0].y, 2) +
+          Math.pow(missileContainer[0].x - aimSelectArray[0].x, 2)
+      );
+    if (missileContainer[0].y - aimSelectArray[0].y >= 0) {
+      if (missileContainer[0].x - aimSelectArray[0].x >= 0) {
+        missileContainer[0].children[1].rotation = Math.acos(missile0X) + 3.142;
+      } else {
+        missileContainer[0].children[1].rotation = Math.asin(missile0X) - 1.571;
+      }
+    } else {
+      if (missileContainer[0].x - aimSelectArray[0].x >= 0) {
+        missileContainer[0].children[1].rotation = Math.asin(missile0X) + 1.571;
+      } else {
+        missileContainer[0].children[1].rotation = Math.acos(missile0X);
+      }
+    }
+    missile0X = missile0X;
+    missile0Y = missile0Y;
+  }
+  if (aimSelectArray[1].visible === true) {
+    missileContainer[1].visible = true;
+    missileContainer[1].x = Battleship.x;
+    missileContainer[1].y = Battleship.y + 3 * (ship.height / 4);
+    missile1X =
+      Math.abs(missileContainer[1].x - aimSelectArray[1].x) /
+      Math.sqrt(
+        Math.pow(missileContainer[1].y - aimSelectArray[1].y, 2) +
+          Math.pow(missileContainer[1].x - aimSelectArray[1].x, 2)
+      );
+
+    missile1Y =
+      Math.abs(missileContainer[1].y - aimSelectArray[1].y) /
+      Math.sqrt(
+        Math.pow(missileContainer[1].y - aimSelectArray[1].y, 2) +
+          Math.pow(missileContainer[1].x - aimSelectArray[1].x, 2)
+      );
+    if (missileContainer[1].y - aimSelectArray[1].y >= 0) {
+      if (missileContainer[1].x - aimSelectArray[1].x >= 0) {
+        missileContainer[1].children[1].rotation = Math.acos(missile1X) + 3.142;
+      } else {
+        missileContainer[1].children[1].rotation = Math.asin(missile1X) - 1.571;
+      }
+    } else {
+      if (missileContainer[1].x - aimSelectArray[1].x >= 0) {
+        missileContainer[1].children[1].rotation = Math.asin(missile1X) + 1.571;
+      } else {
+        missileContainer[1].children[1].rotation = Math.acos(missile1X);
+      }
+    }
+    missile1X = missile1X;
+    missile1Y = missile1Y;
   }
 }
 let bit = 0;
 function onClick(object) {
+  missileContainer[0].visible = false;
+  missileContainer[1].visible = false;
   //console.log(aimSelectArray[0].x, object.x, aimSelectArray[0].y, object.y);
-  if (aimSelectArray[0].x === object.x && aimSelectArray[0].y === object.y) {
+  if (
+    aimSelectArray[0].x === object.x + 25 &&
+    aimSelectArray[0].y === object.y + 25
+  ) {
     aimSelectArray[0].visible = false;
   } else if (
-    aimSelectArray[1].x === object.x &&
-    aimSelectArray[1].y === object.y
+    aimSelectArray[1].x === object.x + 25 &&
+    aimSelectArray[1].y === object.y + 25
   ) {
     aimSelectArray[1].visible = false;
   } else {
     if (aimSelectArray[0].visible === false) {
-      aimSelectArray[0].x = object.x;
-      aimSelectArray[0].y = object.y;
+      aimSelectArray[0].x = object.x + 25;
+      aimSelectArray[0].y = object.y + 25;
       aimSelectArray[0].visible = true;
     } else {
       if (aimSelectArray[1].visible === false) {
-        aimSelectArray[1].x = object.x;
-        aimSelectArray[1].y = object.y;
+        aimSelectArray[1].x = object.x + 25;
+        aimSelectArray[1].y = object.y + 25;
         aimSelectArray[1].visible = true;
       } else {
         if (bit === 0) {
-          aimSelectArray[0].x = object.x;
-          aimSelectArray[0].y = object.y;
+          aimSelectArray[0].x = object.x + 25;
+          aimSelectArray[0].y = object.y + 25;
           aimSelectArray[0].visible = true;
           bit = 1;
         } else {
-          aimSelectArray[1].x = object.x;
-          aimSelectArray[1].y = object.y;
+          aimSelectArray[1].x = object.x + 25;
+          aimSelectArray[1].y = object.y + 25;
           aimSelectArray[1].visible = true;
           bit = 0;
         }
@@ -438,6 +805,76 @@ function keyboard(keyCode) {
   window.addEventListener("keydown", key.downHandler.bind(key), false);
   window.addEventListener("keyup", key.upHandler.bind(key), false);
   return key;
+}
+function shuffle(array) {
+  var currentIndex = array.length,
+    temporaryValue,
+    randomIndex;
+
+  // While there remain elements to shuffle...
+  while (0 !== currentIndex) {
+    // Pick a remaining element...
+    randomIndex = Math.floor(Math.random() * currentIndex);
+    currentIndex -= 1;
+
+    // And swap it with the current element.
+    temporaryValue = array[currentIndex];
+    array[currentIndex] = array[randomIndex];
+    array[randomIndex] = temporaryValue;
+  }
+
+  return array;
+}
+function hitTestRectangle(r1, r2) {
+  //Define the variables we'll need to calculate
+  let hit, combinedHalfWidths, combinedHalfHeights, vx, vy;
+
+  //hit will determine whether there's a collision
+  hit = false;
+
+  //Find the center points of each sprite
+  r1.centerX = r1.x + r1.width / 2;
+  r1.centerY = r1.y + r1.height / 2;
+  r2.centerX = r2.x + r2.width / 2;
+  r2.centerY = r2.y + r2.height / 2;
+
+  //Find the half-widths and half-heights of each sprite
+  r1.halfWidth = r1.width / 2;
+  r1.halfHeight = r1.height / 2;
+  r2.halfWidth = r2.width / 2;
+  r2.halfHeight = r2.height / 2;
+
+  //Calculate the distance vector between the sprites
+  vx = r1.centerX - r2.centerX;
+  vy = r1.centerY - r2.centerY;
+
+  //Figure out the combined half-widths and half-heights
+  combinedHalfWidths = r1.halfWidth + r2.halfWidth;
+  combinedHalfHeights = r1.halfHeight + r2.halfHeight;
+
+  //Check for a collision on the x axis
+  if (Math.abs(vx) < combinedHalfWidths) {
+    //A collision might be occurring. Check for a collision on the y axis
+    if (Math.abs(vy) < combinedHalfHeights) {
+      //There's definitely a collision happening
+      hit = true;
+    } else {
+      //There's no collision on the y axis
+      hit = false;
+    }
+  } else {
+    //There's no collision on the x axis
+    hit = false;
+  }
+
+  //`hit` will be either `true` or `false`
+  return hit;
+}
+// Function to generate random number
+function randomNumber(min, max) {
+  min = Math.ceil(min);
+  max = Math.floor(max);
+  return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 //Left arrow key `press` method
 /*left.press = () => {
