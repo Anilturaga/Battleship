@@ -47,9 +47,9 @@ app.renderer.resize(window.innerWidth, window.innerHeight);
 // Add custom cursor styles
 app.renderer.plugins.interaction.cursorStyles.default = defaultIcon;
 app.renderer.plugins.interaction.cursorStyles.pointer = hoverIcon;
+document.body.appendChild(app.view);
 
 //Add the canvas that Pixi automatically created for you to the HTML document
-document.body.appendChild(app.view);
 const alphabetArray = "QPONMLKJIHGFEDCBAZYXWVUTSR".split("");
 loader
   .add([
@@ -62,7 +62,12 @@ loader
     missileLink,
     aimSelectLink
   ])
+  .on("progress", loadProgressHandler)
   .load(setup);
+
+function loadProgressHandler() {
+  console.log("loading");
+}
 let Battleship,
   ship,
   coordsFontSize = 18,
@@ -356,13 +361,17 @@ line.y = 32;
   missile1Text.visible = false;
   gameGraphics.addChild(missile1Text);
   //gameGraphics.visible = false;
-      Battleship.alpha = 1;
-  
-console.log(gameGraphics)
-  gameGraphics.scale.x=2
-      gameGraphics.scale.y=2
-  
-      //gameGraphics.pivot.set(Math.floor(window.innerWidth / 100) * 25+Battleship.width/4-25,window.innerHeight-Battleship.height*2)
+  Battleship.alpha = 1;
+
+  console.log(gameGraphics);
+  gameGraphics.scale.x = 2;
+  gameGraphics.scale.y = 2;
+
+  //gameGraphics.pivot.set(Math.floor(window.innerWidth / 100) * 25+Battleship.width/4-25,window.innerHeight-Battleship.height*2)
+  gameGraphics.position.set(
+    -1 * (Math.floor(window.innerWidth / 100) * 50 + Battleship.width / 2 - 75),
+    -1 * (yGraph * 50 + 95)
+  );
   app.stage.addChild(gameGraphics);
   //console.log(collectMaps.children);
 
@@ -411,43 +420,58 @@ let staticRadius = 5,
   missile1X = 0,
   missile1Y = 0,
   k = 0,
-    pivotX = 0,pivotY = 0,
+  pivotX = 0,
+  pivotY = 0,
   enemyBeacon = [];
+
 function gameLoop(delta) {
   if (gameState == 1) {
     if (collectBeaconsArrayCount < collectBeacons.children.length - 2) {
       collectBeacons.children[collectBeaconsArrayCount].visible = true;
       collectBeacons.children[collectBeaconsArrayCount + 1].visible = true;
       collectBeaconsArrayCount += 2;
-    } else if (k < Math.ceil(mapsArray[0].length / 2)) {
-      for (let l = 0; l < mapsArray.length; l++) {
-        mapsArray[l][k].alpha = 1;
+    } else if (k < Math.floor(mapsArray[0].length / 2)) {
+            let len = Math.floor(mapsArray[0].length / 2);
+      if (len + k <= mapsArray[0].length - 1) {
+        for (let l = 0; l < mapsArray.length; l++) {
+          mapsArray[l][len + k].alpha = 1;
+        }
       }
-      for (let l = 0; l < mapsArray.length; l++) {
-        //console.log("/", mapsArray[l][k].alpha,l,k,mapsArray.length,mapsArray[1].length);
-        mapsArray[l][mapsArray[0].length - 1 - k].alpha = 1;
+      if (len - k > 0) {
+        for (let l = 0; l < mapsArray.length; l++) {
+          //console.log("/", mapsArray[l][k].alpha,l,k,mapsArray.length,mapsArray[1].length);
+          mapsArray[l][len - k].alpha = 1;
+        }
       }
+      if(len-k === 1){
+      for (let l = 0; l < mapsArray.length; l++) {
+          //console.log("/", mapsArray[l][k].alpha,l,k,mapsArray.length,mapsArray[1].length);
+          mapsArray[l][0].alpha = 1;
+                  mapsArray[l][mapsArray[l].length-1].alpha = 1;
+
+        }}
+      //console.log(len-k,len+k,mapsArray[0].length)
+      gameGraphics.scale.x -= 1/len;
+      gameGraphics.scale.y -= 1/len;
+      gameGraphics.position.set(
+        (1 - (2-gameGraphics.scale.x)) *
+          -1 *
+          (Math.floor(window.innerWidth / 100) * 50 +
+            Battleship.width / 2 -
+            75),
+        (1 - (2-gameGraphics.scale.x)) * -1 * (yGraph * 50 + 95)
+      );
+
       k += 1;
       //collectMaps.alpha+=0.05
     } else if (fireButtonContainer.alpha < 1) {
       //Battleship.alpha += 0.03;
-      fireButtonContainer.alpha = fireButtonContainer.alpha+0.03;
-      //console.log(parseFloat(fireButtonContainer.alpha.toPrecision(3)),fireButtonContainer.alpha-1)
-      gameGraphics.scale.x-=0.03
-      gameGraphics.scale.y-=0.03
-      /*console.log(gameGraphics.scale.x,
-      gameGraphics.scale.y
-      )
-      //if(fireButtonContainer.alpha<1){
-      //if(fireButtonContainer.alpha===0.27 || fireButtonContainer.alpha===0.6000000000000003 || fireButtonContainer.alpha===0.9900000000000007){
-      gameGraphics.pivot.set((Math.floor(window.innerWidth / 100) * 25+Battleship.width/4-25)*(1-fireButtonContainer.alpha),(window.innerHeight-Battleship.height*2)*(1-fireButtonContainer.alpha))
-      //console.log(gameGraphics.pivot.x,gameGraphics.pivot.y)
-      //console.log(Battleship.x,Battleship.y)
-      */
+      fireButtonContainer.alpha = fireButtonContainer.alpha + 0.03;
+      
     } else {
-      //gameGraphics.pivot.set(0,0)
-      gameGraphics.scale.x=1
-      gameGraphics.scale.y=1
+      gameGraphics.position.set(0, 0);
+      gameGraphics.scale.x = 1;
+      gameGraphics.scale.y = 1;
       console.log("Game state to 0");
       gameState = 0;
     }
