@@ -808,7 +808,7 @@ enemyShips = new Graphics();
 //enemyShips.zIndex = -1
 var enemyFuncStatus = 0;
 let enemyX, enemyY;
-var enemyKey = setInterval(enemyFunction, 4000);
+var enemyKey = setInterval(enemyFunction, 3500);
 function enemyFunction() {
   var X = enemyX,
     Y = enemyY;
@@ -982,8 +982,8 @@ function onFire() {
           missileContainer[0].children[1].rotation = Math.acos(missile0X);
         }
       }
-      missile0X = 2 * missile0X;
-      missile0Y = 2 * missile0Y;
+      missile0X = 1.7 * missile0X;
+      missile0Y = 1.7 * missile0Y;
     }
   }
   if (missileContainer[1].visible === false) {
@@ -1020,8 +1020,8 @@ function onFire() {
           missileContainer[1].children[1].rotation = Math.acos(missile1X);
         }
       }
-      missile1X = 2 * missile1X;
-      missile1Y = 2 * missile1Y;
+      missile1X = 1.7 * missile1X;
+      missile1Y = 1.7 * missile1Y;
     }
   }
 }
