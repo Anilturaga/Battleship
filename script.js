@@ -88,6 +88,14 @@ let Battleship,
   missileContainer = [],
   missile0Text,
   missile1Text,
+  healthBar,
+  healthText,
+  enemyNumber,
+  enemyNumberText,
+  enemyNumberTextValue,
+  missileNumber,
+  missileNumberText,
+  missileNumberTextValue,
   beaconIndexLocation = [];
 let gameGraphics = new Container();
 let gameState = 0;
@@ -113,10 +121,10 @@ function setup() {
   Battleship.x = Math.floor(window.innerWidth / 100) * 50 + 15;
   // - ship.width / 2
   Battleship.y = yGraph * 50 - ship.height;
-  Battleship.interactive = true;
+  //Battleship.interactive = true;
 
   // this button mode will mean the hand cursor appears when you roll over the bunny with your mouse
-  Battleship.buttonMode = true;
+  //Battleship.buttonMode = true;
   Battleship.on("pointerdown", onBattleshipClick);
   Battleship.alpha = 0;
   collectBeacons = new Container();
@@ -311,6 +319,115 @@ function setup() {
   fireButtonContainer.on("pointerdown", event => onFire());
   fireButtonContainer.alpha = 0;
   gameGraphics.addChild(fireButtonContainer);
+  //Create the health bar
+  healthBar = new Container();
+  healthBar.position.set(
+    Math.floor((3 * window.innerWidth) / (4 * 50)) * 50,
+    window.innerHeight - 30
+  );
+
+  gameGraphics.addChild(healthBar);
+  //Create the black background rectangle
+  let innerBar = new Graphics();
+  innerBar.beginFill(0x0c39bf);
+  innerBar.drawRect(0, 0, 150, 30);
+  innerBar.endFill();
+  healthBar.addChild(innerBar);
+
+  //Create the front red rectangle
+  let outerBar = new Graphics();
+  outerBar.beginFill(0xffffff);
+  outerBar.drawRect(4, 4, 142, 22);
+  outerBar.endFill();
+  healthBar.addChild(outerBar);
+
+  healthBar.outer = outerBar;
+  healthBar.alpha = 0;
+  healthText = new Text("HEALTH");
+  healthText.anchor.x = 0.5;
+  healthText.anchor.y = 0.5;
+  healthText.x = healthBar.x + 75;
+  healthText.y = healthBar.y + 5 - healthText.height / 2;
+  healthText.style = {
+    fill: "#ffffff",
+    fontFamily: "Teko",
+    fontSize: 20
+  };
+  healthText.alpha = 0;
+  gameGraphics.addChild(healthText);
+
+  enemyNumber = new Graphics();
+  enemyNumber.lineStyle(4, 0x0c39bf, 1);
+  enemyNumber.beginFill(0xffffff);
+  enemyNumber.drawRect(0, 0, 50, 25);
+  enemyNumber.endFill();
+  enemyNumber.x = Math.floor(window.innerWidth / (4 * 50)) * 50;
+  enemyNumber.y = window.innerHeight - 30;
+  gameGraphics.addChild(enemyNumber);
+  enemyNumber.alpha = 0;
+
+  enemyNumberText = new Text("ENEMIES");
+  enemyNumberText.anchor.x = 0.5;
+  enemyNumberText.anchor.y = 0.5;
+  enemyNumberText.x = enemyNumber.x + enemyNumber.width / 2;
+  enemyNumberText.y = enemyNumber.y + 5 - enemyNumber.height / 2;
+  enemyNumberText.style = {
+    fill: "#ffffff",
+    fontFamily: "Teko",
+    fontSize: 20
+  };
+  enemyNumberText.alpha = 0;
+  gameGraphics.addChild(enemyNumberText);
+
+  enemyNumberTextValue = new Text(3);
+  enemyNumberTextValue.anchor.x = 0.5;
+  enemyNumberTextValue.anchor.y = 0.5;
+  enemyNumberTextValue.x = enemyNumber.x + enemyNumber.width / 2;
+  enemyNumberTextValue.y = enemyNumber.y + enemyNumberTextValue.height / 2;
+  enemyNumberTextValue.style = {
+    fill: "#000000",
+    fontFamily: "Teko",
+    fontSize: 23
+  };
+  enemyNumberTextValue.alpha = 0;
+  gameGraphics.addChild(enemyNumberTextValue);
+
+  missileNumber = new Graphics();
+  missileNumber.lineStyle(4, 0x0c39bf, 1);
+  missileNumber.beginFill(0xffffff);
+  missileNumber.drawRect(0, 0, 50, 25);
+  missileNumber.endFill();
+  missileNumber.x = 100;
+  missileNumber.y = window.innerHeight - 30;
+  gameGraphics.addChild(missileNumber);
+  missileNumber.alpha = 0;
+
+  missileNumberText = new Text("MISSILES");
+  missileNumberText.anchor.x = 0.5;
+  missileNumberText.anchor.y = 0.5;
+  missileNumberText.x = missileNumber.x + missileNumber.width / 2;
+  missileNumberText.y = missileNumber.y + 5 - missileNumber.height / 2;
+  missileNumberText.style = {
+    fill: "#ffffff",
+    fontFamily: "Teko",
+    fontSize: 20
+  };
+  missileNumberText.alpha = 0;
+  gameGraphics.addChild(missileNumberText);
+  missileNumberTextValue = new Text("∞");
+  missileNumberTextValue.anchor.x = 0.5;
+  missileNumberTextValue.anchor.y = 0.5;
+  missileNumberTextValue.x = missileNumber.x + missileNumber.width / 2;
+  missileNumberTextValue.y =
+    missileNumber.y + missileNumberTextValue.height / 2;
+  missileNumberTextValue.style = {
+    fill: "#000000",
+    fontFamily: "Teko",
+    fontSize: 23
+  };
+  missileNumberTextValue.alpha = 0;
+  gameGraphics.addChild(missileNumberTextValue);
+
   /*line.lineStyle(1, 0xFFFFFF, 1);
 line.moveTo(0, 0);
 line.lineTo(80, 50);
@@ -363,7 +480,7 @@ line.y = 32;
   //gameGraphics.visible = false;
   Battleship.alpha = 1;
 
-  console.log(gameGraphics);
+  //console.log(gameGraphics);
   gameGraphics.scale.x = 2;
   gameGraphics.scale.y = 2;
 
@@ -378,8 +495,11 @@ line.y = 32;
   let left = keyboard(37),
     up = keyboard(38),
     right = keyboard(39),
-    down = keyboard(40);
-
+    down = keyboard(40),
+    space = keyboard(32);
+  space.press = () => {
+    onFire();
+  };
   //Up
   up.press = () => {
     //console.log("press")
@@ -425,13 +545,24 @@ let staticRadius = 5,
   enemyBeacon = [];
 
 function gameLoop(delta) {
+  console.log(typeof enemyNumberTextValue.text);
+  if (healthBar.outer.width < 0) {
+    alert("You lost!");
+    location.reload();
+    app.ticker.stop();
+  }
+  if (parseInt(enemyNumberTextValue.text) <= 0) {
+    alert("You won!");
+    location.reload();
+    app.ticker.stop();
+  }
   if (gameState == 1) {
     if (collectBeaconsArrayCount < collectBeacons.children.length - 2) {
       collectBeacons.children[collectBeaconsArrayCount].visible = true;
       collectBeacons.children[collectBeaconsArrayCount + 1].visible = true;
       collectBeaconsArrayCount += 2;
     } else if (k < Math.floor(mapsArray[0].length / 2)) {
-            let len = Math.floor(mapsArray[0].length / 2);
+      let len = Math.floor(mapsArray[0].length / 2);
       if (len + k <= mapsArray[0].length - 1) {
         for (let l = 0; l < mapsArray.length; l++) {
           mapsArray[l][len + k].alpha = 1;
@@ -443,31 +574,38 @@ function gameLoop(delta) {
           mapsArray[l][len - k].alpha = 1;
         }
       }
-      if(len-k === 1){
-      for (let l = 0; l < mapsArray.length; l++) {
+      if (len - k === 1) {
+        for (let l = 0; l < mapsArray.length; l++) {
           //console.log("/", mapsArray[l][k].alpha,l,k,mapsArray.length,mapsArray[1].length);
           mapsArray[l][0].alpha = 1;
-                  mapsArray[l][mapsArray[l].length-1].alpha = 1;
-
-        }}
+          mapsArray[l][mapsArray[l].length - 1].alpha = 1;
+        }
+      }
       //console.log(len-k,len+k,mapsArray[0].length)
-      gameGraphics.scale.x -= 1/len;
-      gameGraphics.scale.y -= 1/len;
+      gameGraphics.scale.x -= 1 / len;
+      gameGraphics.scale.y -= 1 / len;
       gameGraphics.position.set(
-        (1 - (2-gameGraphics.scale.x)) *
+        (1 - (2 - gameGraphics.scale.x)) *
           -1 *
           (Math.floor(window.innerWidth / 100) * 50 +
             Battleship.width / 2 -
             75),
-        (1 - (2-gameGraphics.scale.x)) * -1 * (yGraph * 50 + 95)
+        (1 - (2 - gameGraphics.scale.x)) * -1 * (yGraph * 50 + 95)
       );
 
       k += 1;
       //collectMaps.alpha+=0.05
     } else if (fireButtonContainer.alpha < 1) {
       //Battleship.alpha += 0.03;
-      fireButtonContainer.alpha = fireButtonContainer.alpha + 0.03;
-      
+      fireButtonContainer.alpha += 0.03;
+      healthBar.alpha += 0.03;
+      healthText.alpha += 0.03;
+      enemyNumber.alpha += 0.03;
+      enemyNumberText.alpha += 0.03;
+      enemyNumberTextValue.alpha += 0.03;
+      missileNumber.alpha += 0.03;
+      missileNumberText.alpha += 0.03;
+      missileNumberTextValue.alpha += 0.03;
     } else {
       gameGraphics.position.set(0, 0);
       gameGraphics.scale.x = 1;
@@ -479,6 +617,7 @@ function gameLoop(delta) {
   //console.log(yBattleship);
   //Battleship.x = Battleship.x + xBattleship;
   Battleship.y = Battleship.y + yBattleship;
+  //console.log(Math.floor(Battleship.y/50))
   //yBattleship += yBattleship / 100;
   if (Battleship.y < 0) {
     Battleship.y = 2;
@@ -586,9 +725,18 @@ function gameLoop(delta) {
       missileContainer[0].y += missile0Y;
     }
     if (
-      Math.abs(missileContainer[0].x - aimSelectArray[0].x) < 25 &&
-      Math.abs(missileContainer[0].y - aimSelectArray[0].y) < 25
+      Math.abs(missileContainer[0].x - aimSelectArray[0].x) < 15 &&
+      Math.abs(missileContainer[0].y - aimSelectArray[0].y) < 15
     ) {
+      if (
+        aimSelectArray[0].x === enemyShips.x + 25 &&
+        aimSelectArray[0].y === enemyShips.y + 25
+      ) {
+        enemyNumberTextValue.text = enemyNumberTextValue.text - 1;
+
+        alert("That's a hit!");
+        enemyFuncStatus = 0;
+      }
       missileContainer[0].visible = false;
     }
     missile0Text.visible = true;
@@ -622,9 +770,18 @@ function gameLoop(delta) {
       missileContainer[1].y += missile1Y;
     }
     if (
-      Math.abs(missileContainer[1].x - aimSelectArray[1].x) < 25 &&
-      Math.abs(missileContainer[1].y - aimSelectArray[1].y) < 25
+      Math.abs(missileContainer[1].x - aimSelectArray[1].x) < 15 &&
+      Math.abs(missileContainer[1].y - aimSelectArray[1].y) < 15
     ) {
+      if (
+        aimSelectArray[1].x === enemyShips.x + 25 &&
+        aimSelectArray[1].y === enemyShips.y + 25
+      ) {
+        enemyNumberTextValue.text = enemyNumberTextValue.text - 1;
+
+        alert("That's a hit!");
+        enemyFuncStatus = 0;
+      }
       missileContainer[1].visible = false;
     }
     missile1Text.visible = true;
@@ -648,26 +805,139 @@ function gameLoop(delta) {
   }
 }
 enemyShips = new Graphics();
+//enemyShips.zIndex = -1
+var enemyFuncStatus = 0;
 let enemyX, enemyY;
 var enemyKey = setInterval(enemyFunction, 4000);
 function enemyFunction() {
-  enemyX = randomNumber(0, Math.floor(window.innerWidth / 50));
-  enemyY = randomNumber(0, Math.floor(window.innerHeight / 50));
-  enemyShips.clear();
-  enemyShips.beginFill(0x66ccff);
-  enemyShips.drawRect(0, 0, 50, 50);
-  enemyShips.endFill();
-  enemyShips.x = enemyX * 50;
-  enemyShips.y = enemyY * 50;
-  enemyShips.alpha = 0;
-  var index = beaconIndexLocation.findIndex(findIndexFunc);
-  enemyBeacon = [];
-  if (index !== -1) {
-    //console.log("yoooooooooooooooo!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-    enemyBeacon.push(index);
-  }
+  var X = enemyX,
+    Y = enemyY;
+  var enemyGoalX = Math.floor(window.innerWidth / 100);
+  var enemyGoalY = Math.floor(Battleship.y / 50);
+  console.log(enemyX, enemyY, enemyGoalX, enemyGoalY);
+  if (enemyFuncStatus === 0) {
+    var index = -1;
 
-  app.stage.addChild(enemyShips);
+    while (index === -1) {
+      enemyX = randomNumber(
+        Math.floor((3 * window.innerWidth) / (4 * 50)),
+        Math.floor(window.innerWidth / 50)
+      );
+      enemyY = randomNumber(0, Math.floor(window.innerHeight / (4 * 50)));
+      index = beaconIndexLocation.findIndex(findIndexFunc);
+    }
+    enemyBeacon = [];
+
+    enemyBeacon.push(index);
+
+    enemyShips.clear();
+    enemyShips.beginFill(0x66ccff);
+    enemyShips.drawRect(0, 0, 50, 50);
+    enemyShips.endFill();
+    enemyShips.x = enemyX * 50;
+    enemyShips.y = enemyY * 50;
+    //enemyShips.interactive = true;
+    // Shows hand cursor
+    //fireButtonContainer.buttonMode = true;
+    enemyShips.alpha = 0;
+
+    enemyFuncStatus = 1;
+
+    app.stage.addChild(enemyShips);
+  } else {
+    var randomJaffa = Math.random();
+    if (Math.abs(enemyX - enemyGoalX) < 3) {
+      if (enemyX === enemyGoalX) {
+        if (
+          enemyY === enemyGoalY ||
+          enemyY === enemyGoalY + 1 ||
+          enemyY === enemyGoalY + 20
+        ) {
+          enemyNumberTextValue.text = enemyNumberTextValue.text - 1;
+          alert("Enemy hit you!");
+          healthBar.outer.width -= 50;
+          enemyFuncStatus = 0;
+
+          return;
+        }
+      }
+      if (enemyX - enemyGoalX > 0) {
+        enemyX -= 1;
+      } else if (enemyX - enemyGoalX < 0) {
+        enemyX += 1;
+      }
+      if (enemyY - enemyGoalY > 0) {
+        enemyY -= 1;
+      } else if (enemyY - enemyGoalY < 0) {
+        enemyY += 1;
+      }
+      var index = beaconIndexLocation.findIndex(findIndexFunc);
+      enemyBeacon = [];
+      if (index !== -1) {
+        //console.log("yoooooooooooooooo!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+        enemyBeacon.push(index);
+      }
+      enemyFuncStatus += 1;
+
+      enemyShips.clear();
+      enemyShips.beginFill(0x66ccff);
+      enemyShips.drawRect(0, 0, 50, 50);
+      enemyShips.endFill();
+      enemyShips.x = enemyX * 50;
+      enemyShips.y = enemyY * 50;
+      enemyShips.alpha = 0;
+    } else {
+      if (randomJaffa <= 0.7) {
+        if (enemyX - enemyGoalX >= 0) {
+          enemyX -= 1;
+        } else {
+          enemyX += 1;
+        }
+        if (enemyY - enemyGoalY > 0) {
+          enemyY -= 1;
+        } else {
+          enemyY += 1;
+        }
+        var index = beaconIndexLocation.findIndex(findIndexFunc);
+        enemyBeacon = [];
+        if (index !== -1) {
+          //console.log("yoooooooooooooooo!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+          enemyBeacon.push(index);
+        }
+      } else {
+        if (enemyX - enemyGoalX >= 0) {
+          enemyX += 1;
+        } else {
+          enemyX -= 1;
+        }
+        if (enemyY - enemyGoalY > 0) {
+          enemyY -= 1;
+        } else {
+          enemyY += 1;
+        }
+        var index = beaconIndexLocation.findIndex(findIndexFunc);
+        enemyBeacon = [];
+        if (index !== -1) {
+          //console.log("yoooooooooooooooo!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+          enemyBeacon.push(index);
+        }
+      }
+      enemyFuncStatus += 1;
+      if (enemyX < 0 || enemyX > Math.floor(window.innerWidth / 50)) {
+        enemyX = X;
+      }
+      if (enemyY < 0 || enemyY > Math.floor(window.innerHeight / 50)) {
+        enemyY = Y;
+      }
+      enemyShips.clear();
+      enemyShips.beginFill(0x66ccff);
+      enemyShips.drawRect(0, 0, 50, 50);
+      enemyShips.endFill();
+      enemyShips.x = enemyX * 50;
+      enemyShips.y = enemyY * 50;
+      enemyShips.alpha = 0;
+    }
+  }
 }
 function findIndexFunc(each) {
   if (each[0] === enemyX && each[1] === enemyY) {
@@ -678,88 +948,106 @@ function findIndexFunc(each) {
 }
 
 function onFire() {
-  if (aimSelectArray[0].visible === true) {
-    missileContainer[0].visible = true;
-    missileContainer[0].x = Battleship.x;
-    missileContainer[0].y = Battleship.y + ship.height / 4;
-    missile0X =
-      Math.abs(missileContainer[0].x - aimSelectArray[0].x) /
-      Math.sqrt(
-        Math.pow(missileContainer[0].y - aimSelectArray[0].y, 2) +
-          Math.pow(missileContainer[0].x - aimSelectArray[0].x, 2)
-      );
+  if (missileContainer[0].visible === false) {
+    if (aimSelectArray[0].visible === true) {
+      missileContainer[0].visible = true;
+      missileContainer[0].x = Battleship.x;
+      missileContainer[0].y = Battleship.y + ship.height / 4;
+      missile0X =
+        Math.abs(missileContainer[0].x - aimSelectArray[0].x) /
+        Math.sqrt(
+          Math.pow(missileContainer[0].y - aimSelectArray[0].y, 2) +
+            Math.pow(missileContainer[0].x - aimSelectArray[0].x, 2)
+        );
 
-    missile0Y =
-      Math.abs(missileContainer[0].y - aimSelectArray[0].y) /
-      Math.sqrt(
-        Math.pow(missileContainer[0].y - aimSelectArray[0].y, 2) +
-          Math.pow(missileContainer[0].x - aimSelectArray[0].x, 2)
-      );
-    if (missileContainer[0].y - aimSelectArray[0].y >= 0) {
-      if (missileContainer[0].x - aimSelectArray[0].x >= 0) {
-        missileContainer[0].children[1].rotation = Math.acos(missile0X) + 3.142;
+      missile0Y =
+        Math.abs(missileContainer[0].y - aimSelectArray[0].y) /
+        Math.sqrt(
+          Math.pow(missileContainer[0].y - aimSelectArray[0].y, 2) +
+            Math.pow(missileContainer[0].x - aimSelectArray[0].x, 2)
+        );
+      if (missileContainer[0].y - aimSelectArray[0].y >= 0) {
+        if (missileContainer[0].x - aimSelectArray[0].x >= 0) {
+          missileContainer[0].children[1].rotation =
+            Math.acos(missile0X) + 3.142;
+        } else {
+          missileContainer[0].children[1].rotation =
+            Math.asin(missile0X) - 1.571;
+        }
       } else {
-        missileContainer[0].children[1].rotation = Math.asin(missile0X) - 1.571;
+        if (missileContainer[0].x - aimSelectArray[0].x >= 0) {
+          missileContainer[0].children[1].rotation =
+            Math.asin(missile0X) + 1.571;
+        } else {
+          missileContainer[0].children[1].rotation = Math.acos(missile0X);
+        }
       }
-    } else {
-      if (missileContainer[0].x - aimSelectArray[0].x >= 0) {
-        missileContainer[0].children[1].rotation = Math.asin(missile0X) + 1.571;
-      } else {
-        missileContainer[0].children[1].rotation = Math.acos(missile0X);
-      }
+      missile0X = 2 * missile0X;
+      missile0Y = 2 * missile0Y;
     }
-    missile0X = missile0X;
-    missile0Y = missile0Y;
   }
-  if (aimSelectArray[1].visible === true) {
-    missileContainer[1].visible = true;
-    missileContainer[1].x = Battleship.x;
-    missileContainer[1].y = Battleship.y + 3 * (ship.height / 4);
-    missile1X =
-      Math.abs(missileContainer[1].x - aimSelectArray[1].x) /
-      Math.sqrt(
-        Math.pow(missileContainer[1].y - aimSelectArray[1].y, 2) +
-          Math.pow(missileContainer[1].x - aimSelectArray[1].x, 2)
-      );
+  if (missileContainer[1].visible === false) {
+    if (aimSelectArray[1].visible === true) {
+      missileContainer[1].visible = true;
+      missileContainer[1].x = Battleship.x;
+      missileContainer[1].y = Battleship.y + 3 * (ship.height / 4);
+      missile1X =
+        Math.abs(missileContainer[1].x - aimSelectArray[1].x) /
+        Math.sqrt(
+          Math.pow(missileContainer[1].y - aimSelectArray[1].y, 2) +
+            Math.pow(missileContainer[1].x - aimSelectArray[1].x, 2)
+        );
 
-    missile1Y =
-      Math.abs(missileContainer[1].y - aimSelectArray[1].y) /
-      Math.sqrt(
-        Math.pow(missileContainer[1].y - aimSelectArray[1].y, 2) +
-          Math.pow(missileContainer[1].x - aimSelectArray[1].x, 2)
-      );
-    if (missileContainer[1].y - aimSelectArray[1].y >= 0) {
-      if (missileContainer[1].x - aimSelectArray[1].x >= 0) {
-        missileContainer[1].children[1].rotation = Math.acos(missile1X) + 3.142;
+      missile1Y =
+        Math.abs(missileContainer[1].y - aimSelectArray[1].y) /
+        Math.sqrt(
+          Math.pow(missileContainer[1].y - aimSelectArray[1].y, 2) +
+            Math.pow(missileContainer[1].x - aimSelectArray[1].x, 2)
+        );
+      if (missileContainer[1].y - aimSelectArray[1].y >= 0) {
+        if (missileContainer[1].x - aimSelectArray[1].x >= 0) {
+          missileContainer[1].children[1].rotation =
+            Math.acos(missile1X) + 3.142;
+        } else {
+          missileContainer[1].children[1].rotation =
+            Math.asin(missile1X) - 1.571;
+        }
       } else {
-        missileContainer[1].children[1].rotation = Math.asin(missile1X) - 1.571;
+        if (missileContainer[1].x - aimSelectArray[1].x >= 0) {
+          missileContainer[1].children[1].rotation =
+            Math.asin(missile1X) + 1.571;
+        } else {
+          missileContainer[1].children[1].rotation = Math.acos(missile1X);
+        }
       }
-    } else {
-      if (missileContainer[1].x - aimSelectArray[1].x >= 0) {
-        missileContainer[1].children[1].rotation = Math.asin(missile1X) + 1.571;
-      } else {
-        missileContainer[1].children[1].rotation = Math.acos(missile1X);
-      }
+      missile1X = 2 * missile1X;
+      missile1Y = 2 * missile1Y;
     }
-    missile1X = missile1X;
-    missile1Y = missile1Y;
   }
 }
 let bit = 0;
 function onClick(object) {
-  missileContainer[0].visible = false;
-  missileContainer[1].visible = false;
+  //missileContainer[0].visible = false;
+  //missileContainer[1].visible = false;
   //console.log(aimSelectArray[0].x, object.x, aimSelectArray[0].y, object.y);
   if (
     aimSelectArray[0].x === object.x + 25 &&
     aimSelectArray[0].y === object.y + 25
   ) {
-    aimSelectArray[0].visible = false;
+    if (missileContainer[0].visible === false) {
+      aimSelectArray[0].visible = false;
+      aimSelectArray[0].x = 0;
+      aimSelectArray[0].y = 0;
+    }
   } else if (
     aimSelectArray[1].x === object.x + 25 &&
     aimSelectArray[1].y === object.y + 25
   ) {
-    aimSelectArray[1].visible = false;
+    if (missileContainer[1].visible === false) {
+      aimSelectArray[1].visible = false;
+      aimSelectArray[1].x = 0;
+      aimSelectArray[1].y = 0;
+    }
   } else {
     if (aimSelectArray[0].visible === false) {
       aimSelectArray[0].x = object.x + 25;
@@ -771,16 +1059,26 @@ function onClick(object) {
         aimSelectArray[1].y = object.y + 25;
         aimSelectArray[1].visible = true;
       } else {
-        if (bit === 0) {
-          aimSelectArray[0].x = object.x + 25;
-          aimSelectArray[0].y = object.y + 25;
-          aimSelectArray[0].visible = true;
+        if (missileContainer[0].visible === true) {
           bit = 1;
-        } else {
-          aimSelectArray[1].x = object.x + 25;
-          aimSelectArray[1].y = object.y + 25;
-          aimSelectArray[1].visible = true;
+        }
+        if (missileContainer[1].visible === true) {
           bit = 0;
+        }
+        if (bit === 0) {
+          if (missileContainer[0].visible === false) {
+            aimSelectArray[0].x = object.x + 25;
+            aimSelectArray[0].y = object.y + 25;
+            aimSelectArray[0].visible = true;
+            bit = 1;
+          }
+        } else {
+          if (missileContainer[1].visible === false) {
+            aimSelectArray[1].x = object.x + 25;
+            aimSelectArray[1].y = object.y + 25;
+            aimSelectArray[1].visible = true;
+            bit = 0;
+          }
         }
       }
     }
