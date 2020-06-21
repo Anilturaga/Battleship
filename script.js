@@ -42,7 +42,7 @@ let app = new Application({
   height: window.innerHeight,
   antialiasing: true,
   transparent: false,
-  resolution: 1,
+  resolution: 1
 });
 app.renderer.view.style.position = "absolute";
 app.renderer.view.style.display = "block";
@@ -65,7 +65,7 @@ loader
     beaconDashLink,
     missileLink,
     aimSelectLink,
-    enemyMissileLink,
+    enemyMissileLink
   ])
   .on("progress", loadProgressHandler)
   .load(setup);
@@ -101,6 +101,7 @@ let Battleship,
   missileNumber,
   missileNumberText,
   missileNumberTextValue,
+  winScreen,
   beaconIndexLocation = [];
 let gameGraphics = new Container();
 let gameState = 0;
@@ -142,7 +143,7 @@ function setup() {
     leftCoords.style = {
       fill: "white",
       fontFamily: "Teko",
-      fontSize: coordsFontSize,
+      fontSize: coordsFontSize
     };
     collectMaps.addChild(leftCoords);
     var horizontalMap = [];
@@ -163,7 +164,7 @@ function setup() {
       map.buttonMode = true;
 
       // Pointers normalize touch and mouse
-      map.on("pointerdown", (event) => onClick(map));
+      map.on("pointerdown", event => onClick(map));
       horizontalMap.push(map);
       collectMaps.addChild(map);
 
@@ -173,7 +174,7 @@ function setup() {
         leftCoords.style = {
           fill: "white",
           fontFamily: "Teko",
-          fontSize: coordsFontSize,
+          fontSize: coordsFontSize
         };
         collectMaps.addChild(leftCoords);
       }
@@ -181,7 +182,7 @@ function setup() {
       depth.style = {
         fill: "white",
         fontFamily: "Teko",
-        fontSize: depthFontSize * 2,
+        fontSize: depthFontSize * 2
       };
       depth.scale.set(0.45, 0.45);
       if (
@@ -313,7 +314,7 @@ function setup() {
   message.style = {
     fill: "#ffffff",
     fontFamily: "Teko",
-    fontSize: 27,
+    fontSize: 27
   };
 
   fireButtonContainer.addChild(rectangle);
@@ -323,7 +324,7 @@ function setup() {
   fireButtonContainer.interactive = true;
   // Shows hand cursor
   fireButtonContainer.buttonMode = true;
-  fireButtonContainer.on("pointerdown", (event) => onFire());
+  fireButtonContainer.on("pointerdown", event => onFire());
   fireButtonContainer.alpha = 0;
   gameGraphics.addChild(fireButtonContainer);
   //Create the health bar
@@ -358,7 +359,7 @@ function setup() {
   healthText.style = {
     fill: "#ffffff",
     fontFamily: "Teko",
-    fontSize: 20,
+    fontSize: 20
   };
   healthText.alpha = 0;
   gameGraphics.addChild(healthText);
@@ -381,7 +382,7 @@ function setup() {
   enemyNumberText.style = {
     fill: "#ffffff",
     fontFamily: "Teko",
-    fontSize: 20,
+    fontSize: 20
   };
   enemyNumberText.alpha = 0;
   gameGraphics.addChild(enemyNumberText);
@@ -394,7 +395,7 @@ function setup() {
   enemyNumberTextValue.style = {
     fill: "#000000",
     fontFamily: "Teko",
-    fontSize: 23,
+    fontSize: 23
   };
   enemyNumberTextValue.alpha = 0;
   gameGraphics.addChild(enemyNumberTextValue);
@@ -417,7 +418,7 @@ function setup() {
   missileNumberText.style = {
     fill: "#ffffff",
     fontFamily: "Teko",
-    fontSize: 20,
+    fontSize: 20
   };
   missileNumberText.alpha = 0;
   gameGraphics.addChild(missileNumberText);
@@ -430,7 +431,7 @@ function setup() {
   missileNumberTextValue.style = {
     fill: "#000000",
     fontFamily: "Teko",
-    fontSize: 23,
+    fontSize: 23
   };
   missileNumberTextValue.alpha = 0;
   gameGraphics.addChild(missileNumberTextValue);
@@ -471,7 +472,7 @@ line.y = 32;
   missile0Text.style = {
     fill: "white",
     fontFamily: "Teko",
-    fontSize: coordsFontSize - 2,
+    fontSize: coordsFontSize - 2
   };
   missile0Text.visible = false;
   gameGraphics.addChild(missile0Text);
@@ -480,7 +481,7 @@ line.y = 32;
   missile1Text.style = {
     fill: "white",
     fontFamily: "Teko",
-    fontSize: coordsFontSize - 2,
+    fontSize: coordsFontSize - 2
   };
   missile1Text.visible = false;
   gameGraphics.addChild(missile1Text);
@@ -498,7 +499,84 @@ line.y = 32;
   );
   app.stage.addChild(gameGraphics);
   //console.log(collectMaps.children);
+  winScreen = new Container();
 
+  let frat = new Text("FRAT's");
+  frat.style = {
+    fill: "#00bcd4",
+    stroke: "white",
+    fontFamily: "Bungee Shade",
+    fontSize: 27
+  };
+  winScreen.addChild(frat);
+  frat.position.set(window.innerWidth / 2 - frat.width / 2, 20);
+  let jpj = new Text("JPJ");
+  jpj.style = {
+    fill: "white",
+    fontFamily: "Teko",
+    fontSize: 150
+  };
+  winScreen.addChild(jpj);
+  jpj.position.set(window.innerWidth / 2 - jpj.width / 2, 50);
+
+  let win = new Text("You Won!");
+  win.style = {
+    fill: "white",
+    fontFamily: "Teko",
+    fontSize: 100
+  };
+  winScreen.addChild(win);
+  win.position.set(
+    window.innerWidth / 2 - win.width / 2,
+    window.innerHeight / 2 - win.height / 2
+  );
+  let cancelBox = new Graphics();
+  cancelBox.lineStyle(4, 0x000000, 1);
+  cancelBox.beginFill(0x00bcd4);
+  cancelBox.drawRoundedRect(0, 0, 100, 50, 10);
+  cancelBox.endFill();
+  cancelBox.x = window.innerWidth / 4 - cancelBox.width / 2;
+  cancelBox.y = (3 * window.innerHeight) / 4 - cancelBox.height / 2;
+  winScreen.addChild(cancelBox);
+  let cancelBoxText = new Text("Play again!");
+  cancelBoxText.style = {
+    fill: "white",
+    fontFamily: "Teko",
+    fontSize: 27
+  };
+  winScreen.addChild(cancelBoxText);
+  cancelBoxText.position.set(
+    cancelBox.x + 5,
+    cancelBox.y + cancelBoxText.height / 2
+  );
+  cancelBox.interactive = true;
+  // Shows hand cursor
+  cancelBox.buttonMode = true;
+  // Pointers normalize touch and mouse
+  cancelBox.on("pointerdown", event => redirectFunction(1));
+  let okBox = new Graphics();
+  okBox.lineStyle(4, 0x000000, 1);
+  okBox.beginFill(0x00bcd4);
+  okBox.drawRoundedRect(0, 0, 100, 50, 10);
+  okBox.endFill();
+  okBox.x = (3 * window.innerWidth) / 4 - okBox.width / 2;
+  okBox.y = (3 * window.innerHeight) / 4 - okBox.height / 2;
+  winScreen.addChild(okBox);
+  let okBoxText = new Text("Exit Game");
+  okBoxText.style = {
+    fill: "white",
+    fontFamily: "Teko",
+    fontSize: 27
+  };
+  winScreen.addChild(okBoxText);
+  okBoxText.position.set(okBox.x + 7, okBox.y + okBoxText.height / 2);
+  // Opt-in to interactivity
+  okBox.interactive = true;
+  // Shows hand cursor
+  okBox.buttonMode = true;
+  // Pointers normalize touch and mouse
+  okBox.on("pointerdown", event => redirectFunction(0));
+  //app.stage.addChild(winScreen);
   let left = keyboard(37),
     up = keyboard(38),
     right = keyboard(39),
@@ -530,7 +608,7 @@ line.y = 32;
     }
   };
   gameState = 1;
-  app.ticker.add((delta) => gameLoop(delta));
+  app.ticker.add(delta => gameLoop(delta));
 
   //console.log(beaconIndexLocation)
 }
@@ -553,13 +631,18 @@ let staticRadius = 5,
 
 function gameLoop(delta) {
   if (healthBar.outer.width < 0) {
-    alert("You lost!");
-    location.reload();
+    gameGraphics.visible = false;
+    winScreen.children[2].text = "You lost!";
+    app.stage.addChild(winScreen);
+    //alert("You lost!");
+    //location.reload();
     app.ticker.stop();
   }
   if (parseInt(enemyNumberTextValue.text) <= 0) {
-    alert("You won!");
-    location.reload();
+    gameGraphics.visible = false;
+    winScreen.children[2].text = "You won!";
+    app.stage.addChild(winScreen);
+    //location.reload();
     app.ticker.stop();
   }
   if (gameState == 1) {
@@ -626,7 +709,7 @@ function gameLoop(delta) {
   //console.log(Math.floor(Battleship.y/50))
   //yBattleship += yBattleship / 100;
   if (Battleship.y < 0) {
-    Battleship.y = 2;
+    Battleship.y = 0;
   }
   if (Battleship.x < 0) {
     Battleship.x = 2;
@@ -741,7 +824,7 @@ function gameLoop(delta) {
         ) {
           enemyNumberTextValue.text = enemyNumberTextValue.text - 1;
 
-          alert("That's a hit!");
+          //alert("That's a hit!");
           enemies.splice(enemyIndex, 1);
           enemyFuncStatus = 0;
         }
@@ -788,7 +871,7 @@ function gameLoop(delta) {
           aimSelectArray[1].y === enemy.Y + 25
         ) {
           enemyNumberTextValue.text = enemyNumberTextValue.text - 1;
-          alert("That's a hit!");
+          //alert("That's a hit!");
           enemies.splice(enemyIndex, 1);
           enemyFuncStatus = 0;
         }
@@ -859,14 +942,14 @@ var enemObj = {
   vX: 7,
   vY: 2,
   goalX: 0,
-  goalY: 0,
+  goalY: 0
 };
 var dumObj = {
   X: 7,
   Y: 7,
   enemyBeacon: -1,
   missileStatus: false,
-  missileGoal: [2, 7],
+  missileGoal: [2, 7]
 };
 function enemySpawn() {
   let index = -1;
@@ -887,7 +970,7 @@ function enemySpawn() {
   let spawnObject = {
     X: enemyX * 50,
     Y: enemyY * 50,
-    enemyBeacon: index,
+    enemyBeacon: index
   };
   enemies.push(spawnObject);
   totalEnemyCount += 1;
@@ -984,7 +1067,7 @@ function enemyPositionUpdate() {
           vX: missileX,
           vY: missileY,
           goalX: Battleship.x + ship.x,
-          goalY: (enemyGoalY + i) * 50,
+          goalY: (enemyGoalY + i) * 50
         });
       }
       enemyShips.clear();
@@ -1073,7 +1156,7 @@ function findIndexFunc(each) {
     return false;
   }
 }
-
+var audioState = 0;
 function onFire() {
   if (missileContainer[0].visible === false) {
     if (
@@ -1162,6 +1245,10 @@ function onFire() {
 }
 let bit = 0;
 function onClick(object) {
+  if (audioState === 0) {
+    playAudio();
+    audioState = 1;
+  }
   //missileContainer[0].visible = false;
   //missileContainer[1].visible = false;
   //console.log(aimSelectArray[0].x, object.x, aimSelectArray[0].y, object.y);
@@ -1239,7 +1326,7 @@ function keyboard(keyCode) {
   key.press = undefined;
   key.release = undefined;
   //The `downHandler`
-  key.downHandler = (event) => {
+  key.downHandler = event => {
     if (event.keyCode === key.code) {
       if (key.isUp && key.press) key.press();
       key.isDown = true;
@@ -1249,7 +1336,7 @@ function keyboard(keyCode) {
   };
 
   //The `upHandler`
-  key.upHandler = (event) => {
+  key.upHandler = event => {
     if (event.keyCode === key.code) {
       if (key.isDown && key.release) key.release();
       key.isDown = false;
@@ -1333,6 +1420,20 @@ function randomNumber(min, max) {
   max = Math.floor(max);
   return Math.floor(Math.random() * (max - min + 1)) + min;
 }
+function playAudio() {
+  var audio = document.getElementById("audio");
+  audio.play();
+}
+function redirectFunction(status) {
+  if (status === 0) {
+    //exit game
+    location.replace("https://jpj.now.sh");
+  } else {
+    location.reload();
+  }
+}
+//setTimeout(playAudio, 000);
+
 //Left arrow key `press` method
 /*left.press = () => {
     //Change the cat's velocity when the key is pressed
