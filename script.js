@@ -127,11 +127,11 @@ function setup() {
   Battleship.x = Math.floor(window.innerWidth / 100) * 50 + 15;
   // - ship.width / 2
   Battleship.y = yGraph * 50 - ship.height;
-  //Battleship.interactive = true;
 
+  ship.interactive = true;
   // this button mode will mean the hand cursor appears when you roll over the bunny with your mouse
-  //Battleship.buttonMode = true;
-  Battleship.on("pointerdown", onBattleshipClick);
+  ship.buttonMode = true;
+  ship.on("pointerdown", onBattleshipClick);
   Battleship.alpha = 0;
   collectBeacons = new Container();
   collectMaps = new Container();
@@ -319,7 +319,8 @@ function setup() {
 
   fireButtonContainer.addChild(rectangle);
   fireButtonContainer.addChild(message);
-  fireButtonContainer.x = Math.floor(window.innerWidth / 100) * 50 - 12.5;
+  fireButtonContainer.x =
+    Math.floor((3 * window.innerWidth) / (4 * 50)) * 50 - 12.5;
   fireButtonContainer.y = window.innerHeight - fireButtonContainer.height;
   fireButtonContainer.interactive = true;
   // Shows hand cursor
@@ -329,11 +330,14 @@ function setup() {
   gameGraphics.addChild(fireButtonContainer);
   //Create the health bar
   healthBar = new Container();
-  healthBar.position.set(
-    Math.floor((3 * window.innerWidth) / (4 * 50)) * 50,
-    window.innerHeight - 30
-  );
-
+  if (window.innerWidth > 600) {
+    healthBar.position.set(
+      Math.floor(window.innerWidth / (4 * 50)) * 50,
+      window.innerHeight - 30
+    );
+  } else {
+    healthBar.position.set(50, window.innerHeight - 30);
+  }
   gameGraphics.addChild(healthBar);
   //Create the black background rectangle
   let innerBar = new Graphics();
@@ -351,7 +355,7 @@ function setup() {
 
   healthBar.outer = outerBar;
   healthBar.alpha = 0;
-  healthText = new Text("HEALTH");
+  healthText = new Text("SHIP HEALTH");
   healthText.anchor.x = 0.5;
   healthText.anchor.y = 0.5;
   healthText.x = healthBar.x + 75;
@@ -369,8 +373,8 @@ function setup() {
   enemyNumber.beginFill(0xffffff);
   enemyNumber.drawRect(0, 0, 50, 25);
   enemyNumber.endFill();
-  enemyNumber.x = Math.floor(window.innerWidth / (4 * 50)) * 50;
-  enemyNumber.y = window.innerHeight - 30;
+  enemyNumber.x = Math.floor((3 * window.innerWidth) / (4 * 50)) * 50;
+  enemyNumber.y = 7;
   gameGraphics.addChild(enemyNumber);
   enemyNumber.alpha = 0;
 
@@ -378,11 +382,12 @@ function setup() {
   enemyNumberText.anchor.x = 0.5;
   enemyNumberText.anchor.y = 0.5;
   enemyNumberText.x = enemyNumber.x + enemyNumber.width / 2;
-  enemyNumberText.y = enemyNumber.y + 5 - enemyNumber.height / 2;
+  enemyNumberText.y = enemyNumber.y + 5 + enemyNumber.height;
   enemyNumberText.style = {
     fill: "#ffffff",
     fontFamily: "Teko",
-    fontSize: 20
+    fontSize: 20,
+    fontWeight: "bolder"
   };
   enemyNumberText.alpha = 0;
   gameGraphics.addChild(enemyNumberText);
@@ -405,8 +410,8 @@ function setup() {
   missileNumber.beginFill(0xffffff);
   missileNumber.drawRect(0, 0, 50, 25);
   missileNumber.endFill();
-  missileNumber.x = 100;
-  missileNumber.y = window.innerHeight - 30;
+  missileNumber.x = window.innerWidth / 4;
+  missileNumber.y = 7;
   gameGraphics.addChild(missileNumber);
   missileNumber.alpha = 0;
 
@@ -414,11 +419,12 @@ function setup() {
   missileNumberText.anchor.x = 0.5;
   missileNumberText.anchor.y = 0.5;
   missileNumberText.x = missileNumber.x + missileNumber.width / 2;
-  missileNumberText.y = missileNumber.y + 5 - missileNumber.height / 2;
+  missileNumberText.y = missileNumber.y + missileNumber.height + 5;
   missileNumberText.style = {
     fill: "#ffffff",
     fontFamily: "Teko",
-    fontSize: 20
+    fontSize: 20,
+    fontWeight: "bolder"
   };
   missileNumberText.alpha = 0;
   gameGraphics.addChild(missileNumberText);
@@ -530,46 +536,57 @@ line.y = 32;
     window.innerWidth / 2 - win.width / 2,
     window.innerHeight / 2 - win.height / 2
   );
-  let cancelBox = new Graphics();
-  cancelBox.lineStyle(4, 0x000000, 1);
-  cancelBox.beginFill(0x00bcd4);
-  cancelBox.drawRoundedRect(0, 0, 100, 50, 10);
-  cancelBox.endFill();
-  cancelBox.x = window.innerWidth / 4 - cancelBox.width / 2;
-  cancelBox.y = (3 * window.innerHeight) / 4 - cancelBox.height / 2;
-  winScreen.addChild(cancelBox);
   let cancelBoxText = new Text("Play again!");
   cancelBoxText.style = {
     fill: "white",
     fontFamily: "Teko",
     fontSize: 27
   };
+  cancelBoxText.anchor.x = 0.5;
+  cancelBoxText.anchor.y = 0.5;
+  let cancelBox = new Graphics();
+  cancelBox.lineStyle(4, 0x000000, 1);
+  cancelBox.beginFill(0x00bcd4);
+  cancelBox.drawRoundedRect(
+    0,
+    0,
+    cancelBoxText.width + 30,
+    cancelBoxText.height + 30,
+    10
+  );
+  cancelBox.endFill();
+  cancelBox.x = window.innerWidth / 4 - cancelBox.width / 2;
+  cancelBox.y = (3 * window.innerHeight) / 4 - cancelBox.height / 2;
+  winScreen.addChild(cancelBox);
+
   winScreen.addChild(cancelBoxText);
   cancelBoxText.position.set(
-    cancelBox.x + 5,
-    cancelBox.y + cancelBoxText.height / 2
+    cancelBox.x + cancelBox.width / 2,
+    cancelBox.y + cancelBox.height / 2
   );
   cancelBox.interactive = true;
   // Shows hand cursor
   cancelBox.buttonMode = true;
   // Pointers normalize touch and mouse
   cancelBox.on("pointerdown", event => redirectFunction(1));
-  let okBox = new Graphics();
-  okBox.lineStyle(4, 0x000000, 1);
-  okBox.beginFill(0x00bcd4);
-  okBox.drawRoundedRect(0, 0, 100, 50, 10);
-  okBox.endFill();
-  okBox.x = (3 * window.innerWidth) / 4 - okBox.width / 2;
-  okBox.y = (3 * window.innerHeight) / 4 - okBox.height / 2;
-  winScreen.addChild(okBox);
   let okBoxText = new Text("Exit Game");
   okBoxText.style = {
     fill: "white",
     fontFamily: "Teko",
     fontSize: 27
   };
+  okBoxText.anchor.x = 0.5;
+  okBoxText.anchor.y = 0.5;
+  let okBox = new Graphics();
+  okBox.lineStyle(4, 0x000000, 1);
+  okBox.beginFill(0x00bcd4);
+  okBox.drawRoundedRect(0, 0, okBoxText.width + 30, okBoxText.height + 30, 10);
+  okBox.endFill();
+  okBox.x = (3 * window.innerWidth) / 4 - okBox.width / 2;
+  okBox.y = (3 * window.innerHeight) / 4 - okBox.height / 2;
+  winScreen.addChild(okBox);
   winScreen.addChild(okBoxText);
-  okBoxText.position.set(okBox.x + 7, okBox.y + okBoxText.height / 2);
+  okBoxText.position.set(okBox.x + okBox.width / 2, okBox.y + okBox.height / 2);
   // Opt-in to interactivity
   okBox.interactive = true;
   // Shows hand cursor
@@ -825,6 +842,7 @@ function gameLoop(delta) {
           enemyNumberTextValue.text = enemyNumberTextValue.text - 1;
 
           //alert("That's a hit!");
+          enemyBeacon.splice(enemyIndex, 1);
           enemies.splice(enemyIndex, 1);
           enemyFuncStatus = 0;
         }
@@ -872,6 +890,7 @@ function gameLoop(delta) {
         ) {
           enemyNumberTextValue.text = enemyNumberTextValue.text - 1;
           //alert("That's a hit!");
+          enemyBeacon.splice(enemyIndex, 1);
           enemies.splice(enemyIndex, 1);
           enemyFuncStatus = 0;
         }
@@ -1130,7 +1149,7 @@ function enemyPositionUpdate() {
   });
 }
 function enemyFunction() {
-  if (totalEnemyCount >= 7) {
+  if (totalEnemyCount === 7 && enemies.length === 0) {
     return;
   }
   enemyBeacon = [];
