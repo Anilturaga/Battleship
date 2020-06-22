@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link
+      rel="apple-touch-icon"
+      sizes="180x180"
+      href="https://cdn.glitch.com/eb939e0e-ddd3-4d33-89f1-34204db1d01e%2Fapple-touch-icon.png?v=1591913210167"
+    />
+    <link
+      rel="icon"
+      type="image/png"
+      href="https://cdn.glitch.com/eb939e0e-ddd3-4d33-89f1-34204db1d01e%2Ffavicon-32x32.png?v=1591913204019"
+      sizes="32x32"
+    />
+    <link
+      rel="icon"
+      type="image/png"
+      href="https://cdn.glitch.com/eb939e0e-ddd3-4d33-89f1-34204db1d01e%2Ffavicon-16x16.png?v=1591913195722"
+      sizes="16x16"
+    />
+    <link
+      rel="mask-icon"
+      href="https://cdn.glitch.com/eb939e0e-ddd3-4d33-89f1-34204db1d01e%2Ffavicon-32x32.png?v=1591913204019"
+      color="#5bbad5"
+    />
+    <title>Battleship Game</title>
+    <!-- import the webpage's stylesheet -->
+    <link rel="stylesheet" href="/style.css" />
+    <script src="https://ajax.googleapis.com/ajax/libs/webfont/1.6.26/webfont.js"></script>
+  </head>
+  <body>
+    <script>
+      WebFont.load({
+        google: {
+          families: ["Teko", "Bungee Shade"]
+        },
+        timeout: 5000,
+        fontactive: function(familyName, fvd) {
+          //This is called once font has been rendered in browser
+          // Your business logic goes here
+        }
+      });
+    </script>
+    <!-- import the webpage's javascript file -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pixi.js/5.1.3/pixi.min.js"></script>
+    <script src="/scriptMin.js" defer></script>
+    
+    <audio
+      id="audio"
+      src="https://cdn.glitch.com/eb939e0e-ddd3-4d33-89f1-34204db1d01e%2Fsong.mp3?v=1592769311394"
+    ></audio>
+  </body>
+</html>

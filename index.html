@@ -1,9 +1,33 @@
 <!DOCTYPE html>
-<html lang="en">
+
+<!---
+Copyright 2017 The AMP Start Authors. All Rights Reserved.
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain magna copy of the License at
+      http://www.apache.org/licenses/LICENSE-2.0
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS-IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+-->
+
+<html ⚡="">
   <head>
     <meta charset="utf-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>JPJ Game</title>
+    <link rel="canonical" href="https://jpj.now.sh" />
+    <meta
+      name="viewport"
+      content="width=device-width,minimum-scale=1,initial-scale=1"
+    />
+    <meta name="amp-google-client-id-api" content="googleanalytics" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Bungee+Shade&display=swap"
+      rel="stylesheet"
+    />
+    <script async="" src="https://cdn.ampproject.org/v0.js"></script>
     <link
       rel="apple-touch-icon"
       sizes="180x180"
@@ -26,31 +50,492 @@
       href="https://cdn.glitch.com/eb939e0e-ddd3-4d33-89f1-34204db1d01e%2Ffavicon-32x32.png?v=1591913204019"
       color="#5bbad5"
     />
-    <title>Battleship Game</title>
-    <!-- import the webpage's stylesheet -->
-    <link rel="stylesheet" href="/style.css" />
-    <script src="https://ajax.googleapis.com/ajax/libs/webfont/1.6.26/webfont.js"></script>
-  </head>
-  <body>
-    <script>
-      WebFont.load({
-        google: {
-          families: ["Teko", "Bungee Shade"]
-        },
-        timeout: 5000,
-        fontactive: function(familyName, fvd) {
-          //This is called once font has been rendered in browser
-          // Your business logic goes here
+    <style amp-boilerplate="">
+      body {
+        -webkit-animation: -amp-start 8s steps(1, end) 0s 1 normal both;
+        -moz-animation: -amp-start 8s steps(1, end) 0s 1 normal both;
+        -ms-animation: -amp-start 8s steps(1, end) 0s 1 normal both;
+        animation: -amp-start 8s steps(1, end) 0s 1 normal both;
+      }
+      @-webkit-keyframes -amp-start {
+        from {
+          visibility: hidden;
         }
-      });
-    </script>
-    <!-- import the webpage's javascript file -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/pixi.js/5.1.3/pixi.min.js"></script>
-    <script src="/scriptMin.js" defer></script>
-    
-    <audio
-      id="audio"
-      src="https://cdn.glitch.com/eb939e0e-ddd3-4d33-89f1-34204db1d01e%2Fsong.mp3?v=1592769311394"
-    ></audio>
+        to {
+          visibility: visible;
+        }
+      }
+      @-moz-keyframes -amp-start {
+        from {
+          visibility: hidden;
+        }
+        to {
+          visibility: visible;
+        }
+      }
+      @-ms-keyframes -amp-start {
+        from {
+          visibility: hidden;
+        }
+        to {
+          visibility: visible;
+        }
+      }
+      @-o-keyframes -amp-start {
+        from {
+          visibility: hidden;
+        }
+        to {
+          visibility: visible;
+        }
+      }
+      @keyframes -amp-start {
+        from {
+          visibility: hidden;
+        }
+        to {
+          visibility: visible;
+        }
+      }
+    </style>
+    <noscript
+      ><style amp-boilerplate="">
+        body {
+          -webkit-animation: none;
+          -moz-animation: none;
+          -ms-animation: none;
+          animation: none;
+        }
+      </style></noscript
+    >
+
+    <script
+      custom-element="amp-sidebar"
+      src="https://cdn.ampproject.org/v0/amp-sidebar-0.1.js"
+      async=""
+    ></script>
+
+    <link
+      href="https://fonts.googleapis.com/css?family=Lato:400,700,900"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="/indexStyle.css" />
+  </head>
+  <body class="lune lune-noir lune-theme-dark">
+    <!-- Start Navbar -->
+    <header
+      class="ampstart-headerbar fixed flex justify-start items-center top-0 left-0 right-0 pl2 pr4 "
+    >
+      <div
+        role="button"
+        aria-label="open sidebar"
+        on="tap:header-sidebar.toggle"
+        tabindex="0"
+        class="ampstart-navbar-trigger  pr2 col-3 "
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          viewbox="0 0 36 36"
+          width="36"
+          height="36"
+        >
+          <path fill="currentColor" d="M9 12h18v2H9z"></path>
+          <path fill="currentColor" d="M9 17h18v2H9z"></path>
+          <path fill="currentColor" d="M9 22h18v2H9z"></path>
+        </svg>
+      </div>
+      <a
+        href="index.html"
+        class="text-decoration-none inline-block mx-auto ampstart-headerbar-home-link  h3 col-6 center"
+      >
+        <div
+          class="ampstart-headerbar-title mx-auto "
+          style="font-family: 'Bungee Shade', Arial;color:#00bcd4"
+        >
+          FRAT
+        </div>
+      </a>
+      <div
+        class="ampstart-headerbar-fixed center m0 p0 flex justify-center nowrap col-3"
+      >
+        <div class="mr2"></div>
+        <a
+          href="tel:9866085588"
+          class="text-decoration-none mr2 ampstart-headerbar-fixed-link lune-underline-strike relative xs-hide sm-hide h7 bold"
+        >
+          —contact us
+          <div class="ampstart-headerbar-icon-wrapper relative"></div>
+        </a>
+      </div>
+    </header>
+
+    <!-- Start Sidebar -->
+    <amp-sidebar
+      id="header-sidebar"
+      class="ampstart-sidebar px3  "
+      layout="nodisplay"
+    >
+      <div class="flex justify-start items-center ampstart-sidebar-header">
+        <div
+          role="button"
+          aria-label="close sidebar"
+          on="tap:header-sidebar.toggle"
+          tabindex="0"
+          class="ampstart-navbar-trigger items-start"
+        >
+          ✕
+        </div>
+      </div>
+      <nav class="ampstart-sidebar-nav ampstart-nav">
+        <ul class="list-reset m0 p0 ampstart-label">
+          <li
+            class="ampstart-nav-item lune-underline-strike relative block col-10 h4 md-h2 caps"
+          >
+            <a aria-label="Play" class="ampstart-nav-link" href="game.html"
+              ><span>P</span><span>L</span><span>A</span><span>Y</span></a
+            >
+          </li>
+          <li
+            class="ampstart-nav-item lune-underline-strike relative block col-10 h4 md-h2 caps"
+          >
+            <a
+              aria-label="Github"
+              class="ampstart-nav-link"
+              href="https://github.com/Anilturaga/Battleship"
+              ><span>G</span><span>I</span><span>T</span><span>H</span
+              ><span>U</span><span>B</span></a
+            >
+          </li>
+          <li
+            class="ampstart-nav-item lune-underline-strike relative block col-10 h4 md-h2 caps"
+          >
+            <a
+              aria-label="Vercel"
+              class="ampstart-nav-link"
+              href="https://vercel.com/"
+              ><span>V</span><span>E</span><span>R</span><span>C</span
+              ><span>E</span><span>L</span></a
+            >
+          </li>
+          <li
+            class="ampstart-nav-item lune-nav-contact lune-underline-strike relative block col-10 h6 underline md-hide lg-hide center"
+          >
+            <a class="ampstart-nav-link" href="tel:9866085588">contact us</a>
+          </li>
+        </ul>
+      </nav>
+    </amp-sidebar>
+    <!-- End Sidebar -->
+    <!-- End Navbar -->
+
+    <main role="main" class="lune-page lune-page-product md-col-9 mx-auto">
+      <!-- Scroll indicator -->
+      <aside
+        class="lune-component-scroll-indicator caps bold flex flex-column items-center h7 m0 fixed bottom-0 left-0 col-12 md-mt2"
+      >
+        <p>Scroll</p>
+      </aside>
+      <!-- This div is used to hide the scroll indicator when scrolling past the first viewport -->
+      <div class="lune-background absolute right-0 bottom-0 left-0"></div>
+      <header
+        class="lune-product-section lune-product-section-hero relative z1 flex"
+      >
+        <div
+          class="lune-hero-content col-12 md-mt0 flex flex-column items-center justify-center"
+        >
+          <h1 class="lune-product-title" aria-label="JPJ">
+            <span class="relative block caps m0 px3 md-p0 z1 lune-anim-move-up "
+              >JPJ</span
+            >
+          </h1>
+
+          <!-- @aghassemi please replace this fixed image with the scroll-bound animation for the rotating chair. -->
+          <figure
+            class="lune-hero-image-wrapper z3 flex justify-center col-12 m0"
+          >
+            <!-- WebP image -->
+            <!--788 1341-->
+            <amp-img
+              class="lune-anim-scale-up lune-hero-image z2 col-7 md-mt0"
+              alt="John Paul Jones"
+              srcset="https://cdn.glitch.com/eb939e0e-ddd3-4d33-89f1-34204db1d01e%2Ff.webp?v=1592782704826"
+              width="680"
+              height="1470"
+              layout="responsive"
+            >
+              <!-- PNG Fallback when WebP is not supported -->
+              <amp-img
+                fallback=""
+                class="lune-anim-scale-up"
+                alt="John Paul Jones"
+                srcset="https://cdn.glitch.com/eb939e0e-ddd3-4d33-89f1-34204db1d01e%2Ff.png?v=1592782717519"
+                width="680"
+                height="1470"
+                layout="responsive"
+              >
+              </amp-img>
+            </amp-img>
+          </figure>
+        </div>
+
+        <!-- Chapter indicators -->
+        <aside
+          class="lune-chapter-name h7 center xs-hide sm-hide absolute caps bold"
+        >
+          <span class="block">Overview</span>
+        </aside>
+        <aside
+          class="lune-chapter-number h7 center flex flex-column justify-between absolute xs-hide sm-hide bold"
+        >
+          <span class="block">1</span> <span class="block">4</span>
+        </aside>
+      </header>
+
+      <section
+        class="lune-product-section lune-product-section-intro relative flex flex-column items-end justify-center p3 z2"
+      >
+        <div class="col-12 md-col-5 lg-col-4">
+          <h2
+            class="lune-product-section-title mb2 caps h4 md-h0 xs-hide sm-hide"
+          >
+            The Game
+          </h2>
+          <h2
+            class="lune-product-section-title caps h4 mb2 flex items-center lune-line-after md-hide lg-hide"
+          >
+            The Game
+          </h2>
+          <p class="lune-product-body h5 mb2">
+            Inspired from the movie Battleship. We tried to recreate
+            <a href="https://youtu.be/1KBy8-7nc1M" target="_blank">this</a>
+            scene from the movie where the destroyer <i>J</i>ohn <i>P</i>aul
+            <i>J</i>ones's radar is damaged and the crew rigs up a ocean water
+            displacement tracker.
+          </p>
+          <p class="lune-product-body h5 mb2">
+            Simply put, we have discrete points that track the water's depth and
+            if the enemy ship is present near it, the beacon is triggered due to
+            the increased water depth. As the enemy moves towards the ship, we
+            track it by looking at the path of the beacons triggered
+            sequentially and attack it with our missiles. When the enemy is near
+            us, it'll also use missiles to attack us.
+          </p>
+        </div>
+
+        <!-- Chapter indicators -->
+        <aside
+          class="lune-chapter-name h7 center xs-hide sm-hide absolute caps bold"
+        >
+          <span class="block">Motivation</span>
+        </aside>
+        <aside
+          class="lune-chapter-number h7 center flex flex-column justify-between absolute xs-hide sm-hide bold"
+        >
+          <span class="block">2</span> <span class="block">4</span>
+        </aside>
+      </section>
+
+      <section
+        class="lune-product-section relative flex flex-column justify-center p3"
+      >
+        <h2
+          class="lune-product-section-title caps h4 mb2 flex items-center lune-line-after md-hide lg-hide"
+        >
+          Controls
+        </h2>
+
+        <p class="lune-product-body h5 mb4 md-hide lg-hide">
+          Currently, the game only supports large screens with keyboard
+          availability. Please use your PC or laptop to play this game for now.
+          We are working on extending the game to more screen sizes and aspect
+          ratios. If you would like to contribute in the development, please
+          visit our Github repo.
+        </p>
+
+        <ul class="p0 m0">
+          <li class="flex items-end pb3 md-py2">
+            <span class="lune-product-details-title h6 md-h4 caps">space bar</span>
+            <div class="lune-product-details-divider mx1"></div>
+            <span class="lune-product-details-figure h6 md-h3 caps">fire</span>
+            <span class="lune-product-details-unit h6 md-h4 caps"> (2 missiles max)</span>
+          </li>
+          <li class="flex items-end pb3 md-py2">
+            <span class="lune-product-details-title h6 md-h4 caps">click on beacon</span>
+            <div class="lune-product-details-divider mx1"></div>
+            <span class="lune-product-details-figure h6 md-h3 caps">aim</span>
+            <span class="lune-product-details-unit h6 md-h4 caps">(2 positions max)</span>
+          </li>
+          <li class="flex items-end pb3 md-py2">
+            <span class="lune-product-details-title h6 md-h4 caps">Arrow keys</span>
+            <div class="lune-product-details-divider mx1"></div>
+            <span class="lune-product-details-figure h6 md-h3 caps">ship</span>
+            <span class="lune-product-details-unit h6 md-h4 caps">(forward, backward)</span>
+          </li>
+          
+        </ul>
+
+        <!-- Chapter indicators -->
+        <aside
+          class="lune-chapter-name h7 center xs-hide sm-hide absolute caps bold"
+        >
+          <span class="block">Controls</span>
+        </aside>
+        <aside
+          class="lune-chapter-number h7 center flex flex-column justify-between absolute xs-hide sm-hide bold"
+        >
+          <span class="block">3</span> <span class="block">4</span>
+        </aside>
+      </section>
+
+      <section class="relative p3 z1 lune-section-materials">
+        <h2
+          class="lune-product-section-title caps h4 mb2 flex items-center lune-line-after md-hide lg-hide"
+        >
+          Materials
+        </h2>
+
+        <div class="flex flex-column ">
+          <h3
+            class="product-material-name relative caps z2 lune-product-material-name-oak h1 sm-h0 md-h00 pl3 mt1 sm-mt3 md-pl0"
+          >
+            Oak
+          </h3>
+
+          <figure
+            class="relative lune-product-material-image-oak-1 col-11 sm-col-8 md-col-6 md-p2 m0"
+          >
+            <!-- WebP image -->
+            <amp-img
+              alt="Oak"
+              srcset="../img/lune/product-materials-noir-oak-1@1x.webp, ../img/lune/product-materials-noir-oak-1@2x.webp 2x"
+              width="561"
+              height="656"
+              layout="responsive"
+            >
+              <!-- PNG Fallback when WebP is not supported -->
+              <amp-img
+                fallback=""
+                alt="Oak"
+                srcset="../img/lune/product-materials-noir-oak-1@1x.jpg, ../img/lune/product-materials-noir-oak-1@2x.jpg 2x"
+                width="561"
+                height="656"
+                layout="responsive"
+              >
+              </amp-img>
+            </amp-img>
+          </figure>
+
+          <figure
+            class="relative lune-product-material-image-oak-2 col-10 sm-col-8 md-col-6 md-p2 self-end m0"
+          >
+            <!-- WebP image -->
+            <amp-img
+              id="oak"
+              alt="Oak"
+              srcset="../img/lune/product-materials-noir-oak-2@1x.webp, ../img/lune/product-materials-noir-oak-2@2x.webp 2x"
+              width="500"
+              height="785"
+              layout="responsive"
+            >
+              <!-- PNG Fallback when WebP is not supported -->
+              <amp-img
+                fallback=""
+                alt="Oak"
+                srcset="../img/lune/product-materials-noir-oak-2@1x.jpg, ../img/lune/product-materials-noir-oak-2@2x.jpg 2x"
+                width="500"
+                height="785"
+                layout="responsive"
+              >
+              </amp-img>
+            </amp-img>
+
+            <a
+              href="product-material-oak-noir.amp.html"
+              class="lune-product-hotspot ampstart-btn ampstart-btn-secondary absolute z1 inline-block flex items-center justify-center center overflow-hidden caps h7 lune-product-hotspot-oak lune-theme-light"
+            >
+              <span class="relative block z3">More</span>
+            </a>
+          </figure>
+        </div>
+
+        <div class="flex flex-column product__materials--poly">
+          <h3
+            class="product-material-name relative caps z2 sm-hide md-hide lg-hide lune-product-material-name-poly h1 sm-h0 md-h0 lg-h00"
+          >
+            <span class="block">POLY-</span>
+            <span class="block">-PROP-</span>
+            <span class="block">-YLENE</span>
+          </h3>
+
+          <h3
+            class="product-material-name relative caps z2 xs-hide lune-product-material-name-poly h1 sm-h0 md-h0 lg-h00"
+          >
+            <span class="block">POLYPR-</span>
+            <span class="block">-OPYLENE</span>
+          </h3>
+
+          <figure
+            class="relative lune-product-material-image-poly col-11 md-col-6 self-center m0"
+          >
+            <!-- WebP image -->
+            <amp-img
+              id="polypropylene"
+              alt="Polypropylene"
+              srcset="../img/lune/product-materials-noir-poly@1x.webp, ../img/lune/product-materials-noir-poly@2x.webp 2x"
+              width="563"
+              height="785"
+              layout="responsive"
+            >
+              <!-- PNG Fallback when WebP is not supported -->
+              <amp-img
+                fallback=""
+                alt="Polypropylene"
+                srcset="../img/lune/product-materials-noir-poly@1x.jpg, ../img/lune/product-materials-noir-poly@2x.jpg 2x"
+                width="563"
+                height="785"
+                layout="responsive"
+              >
+              </amp-img>
+            </amp-img>
+
+            <a
+              href="product-material-polypropylene-noir.amp.html"
+              class="lune-product-hotspot ampstart-btn ampstart-btn-secondary absolute z1 inline-block flex items-center justify-center center overflow-hidden caps h7 lune-product-hotspot-poly lune-theme-light"
+            >
+              <span class="relative block z3">More</span>
+            </a>
+          </figure>
+        </div>
+
+        <!-- Chapter indicators -->
+        <aside
+          class="lune-chapter-name h7 center xs-hide sm-hide absolute caps bold"
+        >
+          <span class="block">Materials</span>
+        </aside>
+        <aside
+          class="lune-chapter-number h7 center flex flex-column justify-between absolute xs-hide sm-hide bold"
+        >
+          <span class="block">4</span> <span class="block">4</span>
+        </aside>
+      </section>
+
+      <div class="lune-title-bottom relative xs-hide sm-hide">
+        <h1 class="lune-product-title" aria-label="JPJ">
+          <span class="relative block caps m0 px3 md-p0 z1 lune-anim-move-up "
+            >JPJ</span
+          >
+        </h1>
+      </div>
+
+      <div class="lune-products-bottom-cta relative z1 flex justify-center">
+        <a
+          href="game.html"
+          class="ampstart-btn ampstart-btn-secondary relative inline-block overflow-hidden caps h7 center lune-theme-dark lune-transparent"
+        >
+          <span class="relative block z3">Play now</span>
+        </a>
+      </div>
+    </main>
   </body>
 </html>
