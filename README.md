@@ -16,7 +16,15 @@ Repo structure.
 
 ### ← index.html
 
-Where you'll probably find nothing except some basic tags.
+Welcome page. Motivation and controls.
+
+### ← indexStyle.css
+
+Minified CSS for index page
+
+### ← game.html
+
+Basic tags for the game.
 
 ### ← style.css
 
@@ -38,12 +46,17 @@ Creates basic animations such as active status of beacons.
 onClick function is called when any part of map is pressed and it triggers aim box.
 
 onBattleshipClick function uses a bit state to invert the ship's direction everytime the Battleship sprite is clicked.
+### ← scriptMin.js
+
+Minified js for game.html
 
 ### ← assets
 
 All assets are made using open sourced 2D tilesets.
 
-We'll rename the assets later.
+We are using glitch's CDN for all asset distribution.
+
+We'll rename the asset files later.
 
 ### Shout out to [Glitch](https://glitch.com/), our primary editor and [Vercel](https://vercel.com/), our hosting platform.
 
