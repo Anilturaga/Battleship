@@ -1,6 +1,21 @@
 <!DOCTYPE html>
 <html ⚡="">
   <head>
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script
+      async
+      src="https://www.googletagmanager.com/gtag/js?id=UA-162253226-1"
+    ></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag() {
+        dataLayer.push(arguments);
+      }
+      gtag("js", new Date());
+
+      gtag("config", "UA-162253226-1");
+    </script>
+
     <meta charset="utf-8" />
     <title>JPJ Game</title>
     <link rel="canonical" href="https://jpj.now.sh" />
@@ -550,7 +565,7 @@
           </button>
         </div>
         <div class=" relative z1 flex justify-center md-hide lg-hide">
-          Made by <span style="color:#00bcd4">Anil Turaga</span> and
+          Made by<span style="color:#00bcd4">&nbspAnil Turaga&nbsp</span> and
           <span style="color:#00bcd4">&nbspAshritha Sanka</span>
         </div>
         <aside
@@ -561,29 +576,35 @@
       </section>
     </main>
     <script>
-    // Run everything inside window load event handler, to make sure
-// DOM is fully loaded and styled before trying to manipulate it.
-window.addEventListener("load", function() {
-    button = document.getElementById("playNow");
-  // Adding click event handler to button.
-  button.addEventListener("click", detectWebGLContext, false);
-  function detectWebGLContext () {
-    // Create canvas element. The canvas is not added to the
-    // document itself, so it is never displayed in the
-    // browser window.
-    var canvas = document.createElement("canvas");
-    // Get WebGLRenderingContext from canvas element.
-    var gl = canvas.getContext("webgl")
-      || canvas.getContext("experimental-webgl");
-    // Report the result.
-    if (gl && gl instanceof WebGLRenderingContext) {
-      
-window.location = "game.html";
-    } else {
-      alert("Your browser or device may not support WebGL.\nPlease disable any extensions you may have and try again.")
-    }
-  }
-}, false);
-</script>
+      // Run everything inside window load event handler, to make sure
+      // DOM is fully loaded and styled before trying to manipulate it.
+      window.addEventListener(
+        "load",
+        function() {
+          button = document.getElementById("playNow");
+          // Adding click event handler to button.
+          button.addEventListener("click", detectWebGLContext, false);
+          function detectWebGLContext() {
+            // Create canvas element. The canvas is not added to the
+            // document itself, so it is never displayed in the
+            // browser window.
+            var canvas = document.createElement("canvas");
+            // Get WebGLRenderingContext from canvas element.
+            var gl =
+              canvas.getContext("webgl") ||
+              canvas.getContext("experimental-webgl");
+            // Report the result.
+            if (gl && gl instanceof WebGLRenderingContext) {
+              window.location = "game.html";
+            } else {
+              alert(
+                "Your browser or device may not support WebGL.\nPlease disable any extensions you may have and try again."
+              );
+            }
+          }
+        },
+        false
+      );
+    </script>
   </body>
 </html>
