@@ -1,18 +1,4 @@
 <!DOCTYPE html>
-
-<!---
-Copyright 2017 The AMP Start Authors. All Rights Reserved.
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain magna copy of the License at
-      http://www.apache.org/licenses/LICENSE-2.0
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS-IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
--->
-
 <html ⚡="">
   <head>
     <meta charset="utf-8" />
@@ -96,6 +82,32 @@ limitations under the License.
         to {
           visibility: visible;
         }
+      }
+      @media only screen and (max-width: 600px) {
+        .mid {
+          align-self: center;
+          text-decoration: underline;
+        }
+      }
+      table {
+        font-family: arial, sans-serif;
+        border-collapse: collapse;
+        width: 100%;
+      }
+
+      td,
+      th {
+        border: 1px solid white;
+        text-align: left;
+        padding: 8px;
+      }
+
+      .setColor {
+        background-color: #00bcd4;
+      }
+      th {
+        background-color: white;
+        color: black;
       }
     </style>
     <noscript
@@ -231,7 +243,17 @@ limitations under the License.
     <main role="main" class="lune-page lune-page-product md-col-9 mx-auto">
       <!-- Scroll indicator -->
       <aside
-        class="lune-component-scroll-indicator caps bold flex flex-column items-center h7 m0 fixed bottom-0 left-0 col-12 md-mt2"
+        class="lune-component-scroll-indicator caps bold flex flex-column items-center h7 m0 fixed bottom-0  col-12 md-mt2 xs-hide sm-hide"
+      >
+        <p>Scroll</p>
+      </aside>
+      <aside
+        class="lune-component-scroll-indicator caps bold flex flex-column items-center h7 m0 fixed bottom-0 left-0 col-9 md-mt2 xs-hide sm-hide"
+      >
+        <p>Scroll</p>
+      </aside>
+      <aside
+        class="lune-component-scroll-indicator caps bold flex flex-column items-center h7 m0 fixed bottom-0 left-0 col-12 md-mt2 md-hide lg-hide"
       >
         <p>Scroll</p>
       </aside>
@@ -312,14 +334,30 @@ limitations under the License.
             <i>J</i>ones's radar is damaged and the crew rigs up a ocean water
             displacement tracker.
           </p>
-          <p class="lune-product-body h5 mb2">
-            Simply put, we have discrete points that track the water's depth and
-            if the enemy ship is present near it, the beacon is triggered due to
-            the increased water depth. As the enemy moves towards the ship, we
-            track it by looking at the path of the beacons triggered
-            sequentially and attack it with our missiles. When the enemy is near
-            us, it'll also use missiles to attack us.
-          </p>
+          <ul>
+            <li>
+              The map is made up of discrete beacons that measure the water
+              depth in <i>ft</i>.
+            </li>
+            <li>
+              When an enemy is closeby, the beacons records the highest value
+              and glows very brightly.
+            </li>
+            <li>
+              The path taken by the enemy can be derived from the pattern of the
+              maximally glowing beacons.
+            </li>
+            <li>
+              Launch missiles on to the location where the enemy is likely to go
+              by observing the pattern and current location of the enemy(Glowing
+              beacon)
+            </li>
+            <li>
+              The enemies will also launch missiles onto the ship when they are
+              close. Evade them by moving the ship and destroy them as soon as
+              possible to not lose ship's health.
+            </li>
+          </ul>
         </div>
 
         <!-- Chapter indicators -->
@@ -345,34 +383,139 @@ limitations under the License.
         </h2>
 
         <p class="lune-product-body h5 mb4 md-hide lg-hide">
-          Currently, the game only supports large screens with keyboard
-          availability. Please use your PC or laptop to play this game for now.
-          We are working on extending the game to more screen sizes and aspect
-          ratios. If you would like to contribute in the development, please
-          visit our Github repo.
+          This game can be played in any web browser on any device. However, we
+          recommend Chrome browser on a PC for the best experience.
         </p>
-
-        <ul class="p0 m0">
+        <h2
+          class="lune-product-section-title caps h3 mb2 flex items-center xs-hide sm-hide mid"
+          style="text-decoration: underline;"
+        >
+          keyboard controls
+        </h2>
+        <h2
+          class="lune-product-section-title caps h5 mb2 flex items-center md-hide lg-hide mid"
+          style="text-decoration: underline;"
+        >
+          keyboard controls
+        </h2>
+        <ul class="p0 m0 xs-hide sm-hide">
           <li class="flex items-end pb3 md-py2">
-            <span class="lune-product-details-title h6 md-h4 caps">space bar</span>
-            <div class="lune-product-details-divider mx1"></div>
+            <span class="lune-product-details-title h6 md-h4 caps"
+              >space bar</span
+            >
+            <div class="lune-product-details-divider mx1 "></div>
             <span class="lune-product-details-figure h6 md-h3 caps">fire</span>
-            <span class="lune-product-details-unit h6 md-h4 caps"> (2 missiles max)</span>
+            <span class="lune-product-details-unit h6 md-h4 caps">
+              (2 missiles max)</span
+            >
           </li>
           <li class="flex items-end pb3 md-py2">
-            <span class="lune-product-details-title h6 md-h4 caps">click on beacon</span>
+            <span class="lune-product-details-title h6 md-h4 caps"
+              >click on beacon</span
+            >
             <div class="lune-product-details-divider mx1"></div>
             <span class="lune-product-details-figure h6 md-h3 caps">aim</span>
-            <span class="lune-product-details-unit h6 md-h4 caps">(2 positions max)</span>
+            <span class="lune-product-details-unit h6 md-h4 caps"
+              >(2 positions max)</span
+            >
           </li>
           <li class="flex items-end pb3 md-py2">
-            <span class="lune-product-details-title h6 md-h4 caps">Arrow keys</span>
+            <span class="lune-product-details-title h6 md-h4 caps"
+              >Arrow keys</span
+            >
             <div class="lune-product-details-divider mx1"></div>
             <span class="lune-product-details-figure h6 md-h3 caps">ship</span>
-            <span class="lune-product-details-unit h6 md-h4 caps">(forward, backward)</span>
+            <span class="lune-product-details-unit h6 md-h4 caps"
+              >(forward, backward)</span
+            >
           </li>
-          
         </ul>
+        <table class="p0 m0 md-hide lg-hide">
+          <tr>
+            <th>Input</th>
+            <th>Action</th>
+          </tr>
+          <tr>
+            <td>Space bar</td>
+            <td>Fires 2 missiles at a time at max</td>
+          </tr>
+          <tr>
+            <td>Click on beacons</td>
+            <td>Can aim 2 missiles at a time at max</td>
+          </tr>
+          <tr>
+            <td>Arrow keys</td>
+            <td>Ship can move forward and backward</td>
+          </tr>
+        </table>
+
+        <br />
+        <h2
+          class="lune-product-section-title caps h3 mb2 flex items-center xs-hide sm-hide mid"
+          style="text-decoration: underline;"
+        >
+          mobile controls
+        </h2>
+        <h2
+          class="lune-product-section-title caps h5 mb2 flex items-center md-hide lg-hide mid"
+          style="text-decoration: underline;"
+        >
+          mobile controls
+        </h2>
+        <ul class="p0 m0 xs-hide sm-hide">
+          <li class="flex items-end pb3 md-py2">
+            <span class="lune-product-details-title h6 md-h4 caps"
+              >Fire button</span
+            >
+            <div class="lune-product-details-divider mx1 "></div>
+            <span class="lune-product-details-figure h6 md-h3 caps"
+              >missiles</span
+            >
+            <span class="lune-product-details-unit h6 md-h4 caps">
+              (2 missiles max)</span
+            >
+          </li>
+          <li class="flex items-end pb3 md-py2">
+            <span class="lune-product-details-title h6 md-h4 caps"
+              >touch beacons</span
+            >
+            <div class="lune-product-details-divider mx1"></div>
+            <span class="lune-product-details-figure h6 md-h3 caps">aim</span>
+            <span class="lune-product-details-unit h6 md-h4 caps"
+              >(2 positions max)</span
+            >
+          </li>
+          <li class="flex items-end pb3 md-py2">
+            <span class="lune-product-details-title h6 md-h4 caps"
+              >Touch ship</span
+            >
+            <div class="lune-product-details-divider mx1"></div>
+            <span class="lune-product-details-figure h6 md-h3 caps"
+              >movement</span
+            >
+            <span class="lune-product-details-unit h6 md-h4 caps"
+              >(forward, backward)</span
+            >
+          </li>
+        </ul>
+        <table class="p0 m0 md-hide lg-hide">
+          <tr>
+            <th>Input</th>
+            <th>Action</th>
+          </tr>
+          <tr>
+            <td>Fire button</td>
+            <td>Fires 2 missiles at a time at max</td>
+          </tr>
+          <tr>
+            <td>Touch beacons</td>
+            <td>Can aim 2 missiles at a time at max</td>
+          </tr>
+          <tr>
+            <td>Touch ship</td>
+            <td>Ship can move forward and backward</td>
+          </tr>
+        </table>
 
         <!-- Chapter indicators -->
         <aside
@@ -387,155 +530,60 @@ limitations under the License.
         </aside>
       </section>
 
-      <section class="relative p3 z1 lune-section-materials">
-        <h2
-          class="lune-product-section-title caps h4 mb2 flex items-center lune-line-after md-hide lg-hide"
-        >
-          Materials
-        </h2>
-
-        <div class="flex flex-column ">
-          <h3
-            class="product-material-name relative caps z2 lune-product-material-name-oak h1 sm-h0 md-h00 pl3 mt1 sm-mt3 md-pl0"
-          >
-            Oak
-          </h3>
-
-          <figure
-            class="relative lune-product-material-image-oak-1 col-11 sm-col-8 md-col-6 md-p2 m0"
-          >
-            <!-- WebP image -->
-            <amp-img
-              alt="Oak"
-              srcset="../img/lune/product-materials-noir-oak-1@1x.webp, ../img/lune/product-materials-noir-oak-1@2x.webp 2x"
-              width="561"
-              height="656"
-              layout="responsive"
+      <section
+        class="lune-product-section relative flex flex-column justify-center p3"
+      >
+        <div class="lune-title-bottom relative xs-hide sm-hide">
+          <h1 class="lune-product-title" aria-label="Play game">
+            <span class="relative block caps m0 px3 md-p0 z1 lune-anim-move-up "
+              >PLAY</span
             >
-              <!-- PNG Fallback when WebP is not supported -->
-              <amp-img
-                fallback=""
-                alt="Oak"
-                srcset="../img/lune/product-materials-noir-oak-1@1x.jpg, ../img/lune/product-materials-noir-oak-1@2x.jpg 2x"
-                width="561"
-                height="656"
-                layout="responsive"
-              >
-              </amp-img>
-            </amp-img>
-          </figure>
-
-          <figure
-            class="relative lune-product-material-image-oak-2 col-10 sm-col-8 md-col-6 md-p2 self-end m0"
-          >
-            <!-- WebP image -->
-            <amp-img
-              id="oak"
-              alt="Oak"
-              srcset="../img/lune/product-materials-noir-oak-2@1x.webp, ../img/lune/product-materials-noir-oak-2@2x.webp 2x"
-              width="500"
-              height="785"
-              layout="responsive"
-            >
-              <!-- PNG Fallback when WebP is not supported -->
-              <amp-img
-                fallback=""
-                alt="Oak"
-                srcset="../img/lune/product-materials-noir-oak-2@1x.jpg, ../img/lune/product-materials-noir-oak-2@2x.jpg 2x"
-                width="500"
-                height="785"
-                layout="responsive"
-              >
-              </amp-img>
-            </amp-img>
-
-            <a
-              href="product-material-oak-noir.amp.html"
-              class="lune-product-hotspot ampstart-btn ampstart-btn-secondary absolute z1 inline-block flex items-center justify-center center overflow-hidden caps h7 lune-product-hotspot-oak lune-theme-light"
-            >
-              <span class="relative block z3">More</span>
-            </a>
-          </figure>
+          </h1>
         </div>
 
-        <div class="flex flex-column product__materials--poly">
-          <h3
-            class="product-material-name relative caps z2 sm-hide md-hide lg-hide lune-product-material-name-poly h1 sm-h0 md-h0 lg-h00"
+        <div class="lune-products-bottom-cta relative z1 flex justify-center">
+          <button
+            id="playNow"
+            class="ampstart-btn ampstart-btn-secondary relative inline-block overflow-hidden caps h7 center lune-theme-light  setColor"
           >
-            <span class="block">POLY-</span>
-            <span class="block">-PROP-</span>
-            <span class="block">-YLENE</span>
-          </h3>
-
-          <h3
-            class="product-material-name relative caps z2 xs-hide lune-product-material-name-poly h1 sm-h0 md-h0 lg-h00"
-          >
-            <span class="block">POLYPR-</span>
-            <span class="block">-OPYLENE</span>
-          </h3>
-
-          <figure
-            class="relative lune-product-material-image-poly col-11 md-col-6 self-center m0"
-          >
-            <!-- WebP image -->
-            <amp-img
-              id="polypropylene"
-              alt="Polypropylene"
-              srcset="../img/lune/product-materials-noir-poly@1x.webp, ../img/lune/product-materials-noir-poly@2x.webp 2x"
-              width="563"
-              height="785"
-              layout="responsive"
-            >
-              <!-- PNG Fallback when WebP is not supported -->
-              <amp-img
-                fallback=""
-                alt="Polypropylene"
-                srcset="../img/lune/product-materials-noir-poly@1x.jpg, ../img/lune/product-materials-noir-poly@2x.jpg 2x"
-                width="563"
-                height="785"
-                layout="responsive"
-              >
-              </amp-img>
-            </amp-img>
-
-            <a
-              href="product-material-polypropylene-noir.amp.html"
-              class="lune-product-hotspot ampstart-btn ampstart-btn-secondary absolute z1 inline-block flex items-center justify-center center overflow-hidden caps h7 lune-product-hotspot-poly lune-theme-light"
-            >
-              <span class="relative block z3">More</span>
-            </a>
-          </figure>
+            <span class="relative block z3">Play now</span>
+          </button>
         </div>
-
-        <!-- Chapter indicators -->
-        <aside
-          class="lune-chapter-name h7 center xs-hide sm-hide absolute caps bold"
-        >
-          <span class="block">Materials</span>
-        </aside>
+        <div class=" relative z1 flex justify-center md-hide lg-hide">
+          Made by <span style="color:#00bcd4">Anil Turaga</span> and
+          <span style="color:#00bcd4">&nbspAshritha Sanka</span>
+        </div>
         <aside
           class="lune-chapter-number h7 center flex flex-column justify-between absolute xs-hide sm-hide bold"
         >
           <span class="block">4</span> <span class="block">4</span>
         </aside>
       </section>
-
-      <div class="lune-title-bottom relative xs-hide sm-hide">
-        <h1 class="lune-product-title" aria-label="JPJ">
-          <span class="relative block caps m0 px3 md-p0 z1 lune-anim-move-up "
-            >JPJ</span
-          >
-        </h1>
-      </div>
-
-      <div class="lune-products-bottom-cta relative z1 flex justify-center">
-        <a
-          href="game.html"
-          class="ampstart-btn ampstart-btn-secondary relative inline-block overflow-hidden caps h7 center lune-theme-dark lune-transparent"
-        >
-          <span class="relative block z3">Play now</span>
-        </a>
-      </div>
     </main>
+    <script>
+    // Run everything inside window load event handler, to make sure
+// DOM is fully loaded and styled before trying to manipulate it.
+window.addEventListener("load", function() {
+    button = document.getElementById("playNow");
+  // Adding click event handler to button.
+  button.addEventListener("click", detectWebGLContext, false);
+  function detectWebGLContext () {
+    // Create canvas element. The canvas is not added to the
+    // document itself, so it is never displayed in the
+    // browser window.
+    var canvas = document.createElement("canvas");
+    // Get WebGLRenderingContext from canvas element.
+    var gl = canvas.getContext("webgl")
+      || canvas.getContext("experimental-webgl");
+    // Report the result.
+    if (gl && gl instanceof WebGLRenderingContext) {
+      
+window.location = "game.html";
+    } else {
+      alert("Your browser or device may not support WebGL.\nPlease disable any extensions you may have and try again.")
+    }
+  }
+}, false);
+</script>
   </body>
 </html>
