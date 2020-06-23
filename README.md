@@ -6,7 +6,7 @@ We made this whole game only using open source tools including assets and to con
 
 Feel free to use any and all of this repository.
 
-**Battleship-game** is pretty much recreation of the iconic(not really) battle scene where they use tsunami buoys to track aliens(bad guys?) and kill them using nothing but their wits and VL-ASROC missiles (Yes, I looked it up) .
+**JPJ** is pretty much recreation of the iconic(not really) battle scene where they use tsunami buoys to track aliens(bad guys?) and kill them using nothing but their wits and VL-ASROC missiles (Yes, I looked it up) .
 
 ## Files
 

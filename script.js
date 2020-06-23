@@ -655,6 +655,15 @@ function gameLoop(delta) {
     //location.reload();
     app.ticker.stop();
   }
+  if(parseInt(missileNumberTextValue.text)<=0){
+    alert("You have no missiles left.")
+    gameGraphics.visible = false;
+    winScreen.children[2].text = "You lost!";
+    app.stage.addChild(winScreen);
+    //alert("You lost!");
+    //location.reload();
+    app.ticker.stop();
+  }
   if (parseInt(enemyNumberTextValue.text) <= 0) {
     gameGraphics.visible = false;
     winScreen.children[2].text = "You won!";
@@ -847,6 +856,8 @@ function gameLoop(delta) {
           enemyFuncStatus = 0;
         }
       });
+      
+      aimSelectArray[0].visible = false;
       missileContainer[0].visible = false;
     }
     missile0Text.visible = true;
@@ -895,6 +906,7 @@ function gameLoop(delta) {
           enemyFuncStatus = 0;
         }
       });
+      aimSelectArray[1].visible = false;
       missileContainer[1].visible = false;
     }
     missile1Text.visible = true;
