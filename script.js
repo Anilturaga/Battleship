@@ -102,7 +102,8 @@ let Battleship,
   missileNumberText,
   missileNumberTextValue,
   winScreen,
-  beaconIndexLocation = [];
+  beaconIndexLocation = [],
+  tutorial = false;
 let gameGraphics = new Container();
 let gameState = 0;
 let missileTrail = new Graphics();
@@ -625,6 +626,7 @@ line.y = 32;
     }
   };
   gameState = 1;
+  tutorial = confirm("Do you want the tutorial?");
   app.ticker.add(delta => gameLoop(delta));
 
   //console.log(beaconIndexLocation)
@@ -655,8 +657,8 @@ function gameLoop(delta) {
     //location.reload();
     app.ticker.stop();
   }
-  if(parseInt(missileNumberTextValue.text)<=0){
-    alert("You have no missiles left.")
+  if (parseInt(missileNumberTextValue.text) <= 0) {
+    alert("You have no missiles left.");
     gameGraphics.visible = false;
     winScreen.children[2].text = "You lost!";
     app.stage.addChild(winScreen);
@@ -727,6 +729,30 @@ function gameLoop(delta) {
       gameGraphics.scale.y = 1;
       console.log("Game state to 0");
       gameState = 0;
+    }
+  } else {
+    if (tutorial === true) {
+      alert("(1/7)The discrete glowing objects on the map are called beacons");
+      alert(
+        "(2/7)A beacon glows with maximum intensity( big red circle) when the enemy is on it"
+      );
+      alert(
+        "(3/7)As the enemy moves towards the ship, the beacons that glow with max intensity also moves with it"
+      );
+      alert(
+        "(4/7)Guess the beacon that the enemy is most probable to arrive and aim on it by clicking the beacon"
+      );
+      alert(
+        "(5/7)Fire missiles (fire button on the lower rigth or the space bar key) on to the guessed beacon"
+      );
+      alert(
+        "(6/7)The enemy(Glowing beacon) will also shoot on to the ship if they are closeby there by lowering your health(lower left)"
+      );
+      alert(
+        "(7/7)Avoid the enemy fire by moving the ship(click on the ship or use the up and down arrow buttons) forward and backward"
+      );
+      alert("Raise your device volume for the song!\nHAPPY HUNTING!");
+      tutorial = false;
     }
   }
   //console.log(yBattleship);
@@ -856,7 +882,7 @@ function gameLoop(delta) {
           enemyFuncStatus = 0;
         }
       });
-      
+
       aimSelectArray[0].visible = false;
       missileContainer[0].visible = false;
     }
